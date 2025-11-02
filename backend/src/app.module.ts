@@ -13,6 +13,8 @@ import { RutinaDiasModule } from './rutina-dias/rutina-dias.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { DetalleVentaModule } from './detalle_venta/detalle_venta.module';
 import { PlanModule } from './plan/plan.module';
+import { ContactoModule } from './contacto/contacto.module';
+import { RegistroModule } from './registro/registro.module';
 
 
 @Module({
@@ -30,8 +32,8 @@ import { PlanModule } from './plan/plan.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-         synchronize:false, // la dejamos en false cuando tenemos las tablas creadas y no queremos que nos cambie o modifique las tablas.(solo consultas a la base de dato)
-        //synchronize: configService.get('NODE_ENV') === 'development', // cuando queremos modificar o cargar tablas usamos este.
+        //  synchronize:false, // la dejamos en false cuando tenemos las tablas creadas y no queremos que nos cambie o modifique las tablas.(solo consultas a la base de dato)
+        synchronize: configService.get('NODE_ENV') === 'development', // cuando queremos modificar o cargar tablas usamos este.
         
       }),
       inject: [ConfigService],
@@ -45,6 +47,8 @@ import { PlanModule } from './plan/plan.module';
     UsuarioModule,
     DetalleVentaModule,
     PlanModule,
+    ContactoModule,
+    RegistroModule,
   ],
   controllers: [AppController],
   providers: [AppService],
