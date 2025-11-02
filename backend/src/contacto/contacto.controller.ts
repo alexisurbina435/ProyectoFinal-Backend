@@ -1,0 +1,70 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
+import { ContactoService } from './contacto.service';
+import { CreateContactoDto } from './dto/create-contacto.dto';
+import { UpdateContactoDto } from './dto/update-contacto.dto';
+import { Contacto } from './entities/contacto.entity';
+
+@Controller('contacto')
+export class ContactoController {
+  constructor(private readonly contactoService: ContactoService) { }
+
+  @Post()
+  async create(@Body() createContactoDto: CreateContactoDto): Promise<Contacto> {
+    try {
+      return await this.contactoService.create(createContactoDto);
+    } catch (error) {
+      throw new HttpException(
+        'Error al crear la consulta',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @Get()
+  async findAll(): Promise<Contacto[]> {
+    try {
+      return await this.contactoService.findAll();
+    } catch (error) {
+      throw new HttpException(
+        'Error al obtener las consultas',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    try {
+      return this.contactoService.findOne(+id);
+    } catch (error) {
+      throw new HttpException(
+        'Error al obtener la consulta',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateContactoDto: UpdateContactoDto) {
+    try {
+      return this.contactoService.update(+id, updateContactoDto);
+    } catch (error) {
+      throw new HttpException(
+        'Error al actualizar la consulta',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    try{
+      return this.contactoService.remove(+id);
+    }catch (error) {
+      throw new HttpException(
+        'Error al eliminar la consulta',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+}
