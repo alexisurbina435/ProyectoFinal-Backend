@@ -1,8 +1,13 @@
+import { Rol } from "../entities/usuario.entity";
+import { tipoPlan } from "../entities/usuario.entity";
+
 export class CreateUsuarioDto {
-    nombre:string;
-    dni:number;
-    apellido:string;
-    correo:string;
-    telefono:number;
-    estado_pago?:boolean;
+        nombre:string;
+        apellido:string;
+        dni:number;
+        telefono:number;
+        correo:string;
+        rol: Rol;
+        estado_pago:boolean;
+        tipoPlan: tipoPlan;
 }

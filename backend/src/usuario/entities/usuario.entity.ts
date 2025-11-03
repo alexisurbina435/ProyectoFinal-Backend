@@ -1,4 +1,19 @@
-import { Column, Entity,PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity,PrimaryGeneratedColumn,OneToMany } from "typeorm";
+import { Rutina } from "src/rutina/entities/rutina.entity";
+import { Venta } from "src/venta/entities/venta.entity";
+
+
+export enum Rol {
+    USUARIO ='Usuario',
+    ADMIN ='Admin'
+}
+
+export enum tipoPlan {
+    BASIC='Basic',
+    MEDIUM='Medium',
+    PREMIUM='Premium'
+}
+
 
 
 @Entity('usuario')
@@ -21,14 +36,25 @@ export class Usuario {
 
     @Column({type:'int', nullable:true})
     telefono:number;
+
+    @Column({type:'enum', enum:Rol , default: Rol.USUARIO })
+    rol : Rol
+
+
+    @Column({ type:'enum', enum:tipoPlan,default:tipoPlan.BASIC })
+    tipoPlan: tipoPlan;
     
     @Column({type:'boolean', default:false})
     estado_pago:boolean;
 
     
+      // RELACIÓN → Un usuario puede tener muchas rutinas
+    @OneToMany(() => Rutina, rutina => rutina.usuario)
+    rutinas: Rutina[];
 
-
-
+    // Un usuario puede tener muchas ventas
+    @OneToMany(() => Venta, (venta) => venta.usuario)
+    ventas: Venta[];
 
 
 

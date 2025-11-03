@@ -1,3 +1,4 @@
+import { Rol, tipoPlan } from "../entities/usuario.entity";
 export class UsuarioDto{
     id_usuario:number;
     nombre:string;
@@ -5,5 +6,7 @@ export class UsuarioDto{
     dni:number;
     telefono:number;
     correo:string;
+    rol: Rol;
     estado_pago:boolean;
+    tipoPlan: tipoPlan;
 }

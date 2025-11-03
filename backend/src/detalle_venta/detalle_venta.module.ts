@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { DetalleVentaService } from './services/detalle-venta.service';
-import { DetalleVentaController } from './controllers/detalle-venta.controller';
+import { DetalleVentaService } from './detalle-venta.service';
+import { DetalleVentaController } from './detalle-venta.controller';
 
 @Module({
   providers: [DetalleVentaService],
