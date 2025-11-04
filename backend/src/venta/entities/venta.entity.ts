@@ -1,0 +1,32 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+  CreateDateColumn,
+} from 'typeorm';
+import { Plan } from 'src/plan/entities/plan.entity';
+import { Usuario } from 'src/usuario/entities/usuario.entity';
+import { DetalleVenta } from 'src/detalle_venta/entities/detalleVenta.entity';
+import { Pago } from 'src/pagos/entities/pago.entity';
+
+@Entity('venta')
+export class Venta {
+  @PrimaryGeneratedColumn()
+  id_venta: number;
+
+  @ManyToOne(() => Usuario, (usuario) => usuario.ventas)
+  usuario: Usuario;
+
+  @ManyToOne(() => Plan, { nullable: true })
+  plan: Plan | null; // Si la venta es de un plan
+
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  fecha: Date;
+
+  @OneToMany(() => DetalleVenta, (detalle) => detalle.venta)
+  detalles: DetalleVenta[];
+
+  @OneToMany(() => Pago, (pago) => pago.venta)
+  pagos: Pago[];
+}

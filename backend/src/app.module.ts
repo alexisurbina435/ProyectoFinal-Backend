@@ -4,18 +4,19 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AdministradorModule } from './administrador/administrador.module';
-import { RutinasModule } from './rutinas/rutinas.module';
+import { RutinaModule } from './rutina/rutina.module';
 import { BlogModule } from './blog/blog.module';
 import { EjercicioModule } from './ejercicio/ejercicio.module';
 import { FichaSaludModule } from './ficha-salud/ficha-salud.module';
-import { RutinaDiasModule } from './rutina-dias/rutina-dias.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { DetalleVentaModule } from './detalle_venta/detalle_venta.module';
 import { PlanModule } from './plan/plan.module';
 import { ContactoModule } from './contacto/contacto.module';
 import { RegistroModule } from './registro/registro.module';
-
+import { DificultadModule } from './dificultad/dificultad.module';
+import { DiaModule } from './dia/dia.module';
+import { VentaModule } from './venta/venta.module';
+import { SemanaModule } from './semana/semana.module';
 
 @Module({
   imports: [
@@ -34,21 +35,22 @@ import { RegistroModule } from './registro/registro.module';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         //  synchronize:false, // la dejamos en false cuando tenemos las tablas creadas y no queremos que nos cambie o modifique las tablas.(solo consultas a la base de dato)
         synchronize: configService.get('NODE_ENV') === 'development', // cuando queremos modificar o cargar tablas usamos este.
-        
       }),
       inject: [ConfigService],
     }),
-    AdministradorModule,
-    RutinasModule,
+    SemanaModule,
+    RutinaModule,
     BlogModule,
     EjercicioModule,
     FichaSaludModule,
-    RutinaDiasModule,
     UsuarioModule,
     DetalleVentaModule,
     PlanModule,
     ContactoModule,
     RegistroModule,
+    DificultadModule,
+    DiaModule,
+    VentaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
