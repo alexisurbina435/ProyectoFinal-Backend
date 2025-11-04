@@ -12,7 +12,6 @@ import { UsuarioModule } from './usuario/usuario.module';
 import { DetalleVentaModule } from './detalle_venta/detalle_venta.module';
 import { PlanModule } from './plan/plan.module';
 import { ContactoModule } from './contacto/contacto.module';
-import { RegistroModule } from './registro/registro.module';
 import { DificultadModule } from './dificultad/dificultad.module';
 import { DiaModule } from './dia/dia.module';
 import { VentaModule } from './venta/venta.module';
@@ -47,7 +46,6 @@ import { SemanaModule } from './semana/semana.module';
     DetalleVentaModule,
     PlanModule,
     ContactoModule,
-    RegistroModule,
     DificultadModule,
     DiaModule,
     VentaModule,
