@@ -1,24 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { Dificultad } from "src/dificultad/entities/dificultad.entity";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Dificultad } from 'src/dificultad/entities/dificultad.entity';
 
 @Entity('ejercicio')
 export class Ejercicio {
-
   @PrimaryGeneratedColumn()
   id_ejercicio: number;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 30 })
   nombre: string;
 
-  @Column({ length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   detalle: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   img_url: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   video_url: string;
 
-  @OneToMany(() => Dificultad, dificultad => dificultad.ejercicio)
+  @OneToMany(() => Dificultad, (dificultad) => dificultad.ejercicio)
   dificultades: Dificultad[];
 }
