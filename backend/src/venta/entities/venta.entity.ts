@@ -21,8 +21,8 @@ export class Venta {
   @ManyToOne(() => Plan, { nullable: true })
   plan: Plan | null; // Si la venta es de un plan
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  fecha: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  fecha_creacion: Date;
 
   @OneToMany(() => DetalleVenta, (detalle) => detalle.venta)
   detalles: DetalleVenta[];

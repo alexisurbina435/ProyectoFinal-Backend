@@ -13,7 +13,7 @@ export class Producto {
     nombre:string;
 
 
-    @Column({type:'text', length:50})
+    @Column({type:'varchar', length:50})
     descripcion:string;
 
     @Column({type:'varchar', length:255, nullable:true})
