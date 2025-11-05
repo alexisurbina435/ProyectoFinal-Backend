@@ -9,7 +9,7 @@ export class Contacto {
     @Column({type: 'varchar', length: 30})
     nombre: string;
 
-    @Column({type: 'varchar', length: 30})
+    @Column({type: 'varchar', length: 50})
     email: string;
 
     @Column({type: 'varchar', length: 200})

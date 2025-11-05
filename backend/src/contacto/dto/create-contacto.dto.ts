@@ -12,6 +12,7 @@ export class CreateContactoDto {
     @IsNotEmpty()
     @IsEmail()
     @Matches(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/, { message: 'El correo no es válido' })
+    @Length(5, 50, { message: 'El correo debe tener entre 5 y 50 caracteres' })
     email: string;
 
     @IsNotEmpty()

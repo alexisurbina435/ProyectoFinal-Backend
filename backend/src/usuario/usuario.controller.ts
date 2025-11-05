@@ -10,7 +10,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
-import { CreateUsuarioDto } from './dto';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import { Usuario } from './entities/usuario.entity';
 
