@@ -3,11 +3,9 @@ import { PlanController } from './plan.controller';
 import { PlanService } from './plan.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Plan } from './entities/plan.entity';
-import { Rutina } from 'src/rutina/entities/rutina.entity';
-import { Usuario } from 'src/usuario/entities/usuario.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Plan, Rutina, Usuario])],
+  imports: [TypeOrmModule.forFeature([Plan])],
   controllers: [PlanController],
   providers: [PlanService],
 })
