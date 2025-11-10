@@ -1,34 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { DiaService } from './dia.service';
 import { CreateDiaDto } from './dto/create-dia.dto';
 import { UpdateDiaDto } from './dto/update-dia.dto';
+import { Dia } from './entities/dia.entity';
 
 @Controller('dia')
 export class DiaController {
-  constructor(private readonly diaService: DiaService) {}
+  constructor(private readonly diaService: DiaService) { }
 
   @Post()
-  create(@Body() createDiaDto: CreateDiaDto) {
-    return this.diaService.create(createDiaDto);
+  async create(@Body() createDiaDto: CreateDiaDto) {
+    try {
+      return await this.diaService.create(createDiaDto);
+    } catch (error) {
+      throw new HttpException('Error al crear el dia', HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<Dia[]> {
     return this.diaService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.diaService.findOne(+id);
+  async findOne(@Param('id') id: number): Promise<Dia> {
+    return await this.diaService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDiaDto: UpdateDiaDto) {
-    return this.diaService.update(+id, updateDiaDto);
+  async update(
+      @Param('id') id: number, 
+      @Body() updateDiaDto: UpdateDiaDto
+  ): Promise<Dia> {
+    return await this.diaService.update(id, updateDiaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.diaService.remove(+id);
+  async remove(@Param('id') id: number): Promise<void> {
+    await this.diaService.remove(id);
   }
 }
