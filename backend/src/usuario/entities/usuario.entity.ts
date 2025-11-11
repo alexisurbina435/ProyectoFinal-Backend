@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany, OneToOne } from 'typeorm';
 import { Rutina } from 'src/rutina/entities/rutina.entity';
 import { Venta } from 'src/venta/entities/venta.entity';
+import { FichaSalud } from 'src/ficha-salud/entities/ficha-salud.entity';
 
 export enum Rol {
   USUARIO = 'Usuario',
@@ -18,19 +19,19 @@ export class Usuario {
   @PrimaryGeneratedColumn()
   id_usuario: number;
 
-  @Column({ type: 'varchar', length: 45, nullable: true })
+  @Column({ type: 'varchar', length: 45})
   nombre: string;
 
-  @Column({ type: 'varchar', length: 45, nullable: true })
+  @Column({ type: 'varchar', length: 45})
   apellido: string;
 
   @Column({ type: 'int', nullable: true })
   dni: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'int'})
   telefono: number;
 
   @Column({ type: 'varchar', length: 30 })
@@ -44,6 +45,11 @@ export class Usuario {
 
   @Column({ type: 'boolean', default: false })
   estado_pago: boolean;
+
+  //Relación one to one con fichaSalud
+  // la ficha es opcional, por que depende de que se inscriba a un plan el usuario
+  @OneToOne(() => FichaSalud, (ficha) => ficha.usuario)
+  ficha?: FichaSalud; 
 
   // RELACIÓN → Un usuario puede tener muchas rutinas
   @OneToMany(() => Rutina, (rutina) => rutina.usuario)
