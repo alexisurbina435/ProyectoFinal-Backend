@@ -28,7 +28,16 @@ export class Pago {
   })
   medioDePago: MediosDePago;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: {
+      to: (value: number): number => value,
+      from: (value: string | null): number | null =>
+        value !== null ? Number(value) : null,
+    },
+  })
   monto: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
