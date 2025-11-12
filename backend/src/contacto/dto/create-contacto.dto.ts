@@ -1,4 +1,3 @@
-import { Transform } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsString, Length, Matches } from "class-validator";
 
 export class CreateContactoDto {

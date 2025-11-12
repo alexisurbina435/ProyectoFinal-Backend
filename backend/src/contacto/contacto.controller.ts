@@ -33,7 +33,7 @@ export class ContactoController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<Contacto> {
     try {
       return this.contactoService.findOne(+id);
     } catch (error) {
@@ -45,7 +45,7 @@ export class ContactoController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateContactoDto: UpdateContactoDto) {
+  async update(@Param('id') id: string, @Body() updateContactoDto: UpdateContactoDto) : Promise<Contacto> {
     try {
       return this.contactoService.update(+id, updateContactoDto);
     } catch (error) {
@@ -57,7 +57,7 @@ export class ContactoController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<Contacto>  {
     try{
       return this.contactoService.remove(+id);
     }catch (error) {
