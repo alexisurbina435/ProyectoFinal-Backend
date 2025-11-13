@@ -7,7 +7,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RutinaModule } from './rutina/rutina.module';
 import { BlogModule } from './blog/blog.module';
 import { EjercicioModule } from './ejercicio/ejercicio.module';
-import { FichaSaludModule } from './ficha-salud/ficha-salud.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { DetalleVentaModule } from './detalle_venta/detalle_venta.module';
 import { PlanModule } from './plan/plan.module';
@@ -16,6 +15,8 @@ import { DificultadModule } from './dificultad/dificultad.module';
 import { DiaModule } from './dia/dia.module';
 import { VentaModule } from './venta/venta.module';
 import { SemanaModule } from './semana/semana.module';
+import { FichaSaludModule } from './ficha-salud/ficha-salud.module';
+import { ProductosModule } from './productos/productos.module';
 
 @Module({
   imports: [
@@ -41,7 +42,6 @@ import { SemanaModule } from './semana/semana.module';
     RutinaModule,
     BlogModule,
     EjercicioModule,
-    FichaSaludModule,
     UsuarioModule,
     DetalleVentaModule,
     PlanModule,
@@ -49,6 +49,8 @@ import { SemanaModule } from './semana/semana.module';
     DificultadModule,
     DiaModule,
     VentaModule,
+    FichaSaludModule,
+    ProductosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

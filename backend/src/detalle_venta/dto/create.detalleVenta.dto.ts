@@ -1,6 +1,20 @@
-import { Producto } from "src/productos/entities/producto.entity";
+import { IsNotEmpty, IsNumber, IsPositive } from "class-validator";
 
 export class CreateDetalleVentaDto {
-    id_detalle:number;
-    cantidad:number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    @IsPositive()
+    cantidad: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    @IsPositive()
+    id_venta: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    @IsPositive()
+    id_producto: number
+
 }
