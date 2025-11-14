@@ -8,15 +8,19 @@ export class Dificultad {
   @PrimaryGeneratedColumn()
   id_dificultad: number;
 
-  @Column()
+  @Column({ type: 'int' })
   peso: number;
 
-  @Column()
+  @Column({ type: 'int' })
   repeticiones: number;
 
-  @ManyToOne(() => Dia, dia => dia.dificultades)
+
+  // ELIMINAR EN CASCADA SI O NO?
+  @ManyToOne(() => Dia, dia => dia.dificultades, { onDelete: 'CASCADE' })
   dia: Dia;
 
-  @ManyToOne(() => Ejercicio, ejercicio => ejercicio.dificultades)
+  @ManyToOne(() => Ejercicio, ejercicio => ejercicio.dificultades, {
+    onDelete: 'CASCADE',
+  })
   ejercicio: Ejercicio;
 }

@@ -15,6 +15,6 @@ export class Contacto {
     @Column({type: 'varchar', length: 200})
     consulta: string;
 
-    @CreateDateColumn({type: 'timestamp'})
+    @CreateDateColumn({type: 'datetime'})
     fecha_creacion: Date;
 }

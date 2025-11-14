@@ -14,6 +14,7 @@ export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
     private usuarioRepository: Repository<Usuario>,
+    
   ) {}
 
   async getAllUsuario(): Promise<Usuario[]> {

@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Rutina } from './entities/rutina.entity';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
 import { Plan } from 'src/plan/entities/plan.entity';
-import { FichaSalud } from 'src/ficha-salud/entities/fichaSalud-entity';
+import { FichaSalud } from 'src/ficha-salud/entities/ficha-salud.entity';
 
 
 @Module({
