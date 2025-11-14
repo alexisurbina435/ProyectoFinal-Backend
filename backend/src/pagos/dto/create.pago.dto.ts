@@ -1,23 +1,29 @@
-/* eslint-disable prettier/prettier */
-
-import { IsEnum, IsNotEmpty, IsNumber, IsPositive } from "class-validator";
-import { MediosDePago, EstadoPago } from "../entities/pago.entity";
-
+import { Type } from 'class-transformer';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsPositive,
+} from 'class-validator';
+import { MediosDePago, EstadoPago } from '../entities/pago.entity';
 
 export class CreatePagoDto {
   @IsEnum(MediosDePago)
   @IsNotEmpty()
   medioDePago: MediosDePago;
 
-  @IsNumber()
+  @Type(() => Number)
   @IsPositive()
   monto: number;
 
+  @IsOptional()
   @IsEnum(EstadoPago)
   estado?: EstadoPago;
 
-  // Relación con venta
-  // @IsNumber()
-  // @IsNotEmpty()
-  // ventaId: number;
+  // Relacion con venta
+  @Type(() => Number)
+  @IsInt()
+  @IsPositive()
+  ventaId: number;
 }

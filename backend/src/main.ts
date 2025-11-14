@@ -8,8 +8,17 @@ async function bootstrap() {
   const cors = require('cors');
   app.use(cors());
   app.setGlobalPrefix('api');
-  //esta linea de abajo permite validar los datos(ejemplo que los email sean validos)
-  app.useGlobalPipes(new ValidationPipe());
+  // Validamos y transformamos los DTO para que respeten los tipos declarados
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

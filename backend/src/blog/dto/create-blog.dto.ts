@@ -1,11 +1,35 @@
+import { Type } from 'class-transformer';
+import {
+  IsInt,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MinLength,
+} from 'class-validator';
+
 export class CreateBlogDto {
-    id_blog:number;
-    imagen:string;
-    categoria:string;
-    titulo:string;
-    glosario:string;
-    contenido:string;
-    fecha_publicacion:Date;
+  @IsOptional()
+  @IsString()
+  imagen?: string | null;
 
+  @IsOptional()
+  @IsString()
+  categoria?: string | null;
 
+  @IsString()
+  @MinLength(1)
+  titulo: string;
+
+  @IsString()
+  @MinLength(1)
+  glosario: string;
+
+  @IsString()
+  @MinLength(1)
+  contenido: string;
+
+  @Type(() => Number)
+  @IsInt()
+  @IsPositive()
+  usuarioId: number;
 }

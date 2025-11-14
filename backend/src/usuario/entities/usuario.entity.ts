@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany, OneToOne } from 'typeorm';
 import { Rutina } from 'src/rutina/entities/rutina.entity';
 import { Venta } from 'src/venta/entities/venta.entity';
+import { Blog } from 'src/blog/entities/blog.entity';
 import { FichaSalud } from 'src/ficha-salud/entities/ficha-salud.entity';
 
 export enum Rol {
@@ -58,4 +59,8 @@ export class Usuario {
   // Un usuario puede tener muchas ventas
   @OneToMany(() => Venta, (venta) => venta.usuario)
   ventas: Venta[];
+
+  // Un usuario puede tener muchos blogs
+  @OneToMany(() => Blog, (blog) => blog.usuario)
+  blogs: Blog[];
 }
