@@ -15,6 +15,7 @@ export class UsuarioService {
     @InjectRepository(Usuario)
     private usuarioRepository: Repository<Usuario>,
     
+    
   ) {}
 
   async getAllUsuario(): Promise<Usuario[]> {
@@ -24,7 +25,7 @@ export class UsuarioService {
 
   async getUsuarioById(id: number): Promise<Usuario> {
     const usuario = await this.usuarioRepository.findOne({
-      where: { id_usuario: id },
+      where: { id_usuario: id}, relations: ['ficha'] 
     });
     if (!usuario) {
       throw new NotFoundException(`usuario con ${id} no existe`);
