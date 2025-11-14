@@ -1,3 +1,4 @@
+import { Unique } from 'typeorm';
 import { Rol } from '../entities/usuario.entity';
 import { tipoPlan } from '../entities/usuario.entity';
 import {
@@ -5,14 +6,17 @@ import {
   IsEmail,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   Matches,
   ValidateIf,
+  ValidateNested,
 } from 'class-validator';
+import { FichaSalud } from 'src/ficha-salud/entities/ficha-salud.entity';
 
 export class CreateUsuarioDto {
-  
+
   @IsNotEmpty()
   @IsString()
   nombre: string;
@@ -45,7 +49,10 @@ export class CreateUsuarioDto {
   @ValidateIf((o) => o.password)
   @Equals('password', { message: 'Las contraseñas no coinciden' })
   confirmPassword?: string;
-  
+
+  @IsOptional()
+  @ValidateNested()
+  ficha?: FichaSalud;
 
   dni: number;
   rol: Rol;
