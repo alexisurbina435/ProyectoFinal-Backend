@@ -1,5 +1,10 @@
+import { IsInt, IsNotEmpty } from 'class-validator';
+
 export class CreateDiaDto {
-    id_dia:number;
-    cant_dias:number;
-    
+  @IsInt()
+  @IsNotEmpty()
+  cant_dias: number;
+  @IsInt()
+  @IsNotEmpty()
+  id_semana: number;
 }

@@ -4,17 +4,31 @@ import { UpdateDiaDto } from './dto/update-dia.dto';
 import { Dia } from './entities/dia.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Semana } from 'src/semana/entities/semana.entity';
 
 @Injectable()
 export class DiaService {
   constructor(
     @InjectRepository(Dia)
     private readonly diaRepo: Repository<Dia>,
+
+    @InjectRepository(Semana)
+    private readonly semanaRepository: Repository<Semana>,
   ) {}
 
-  async create(createDiaDto: CreateDiaDto): Promise<Dia> {
-    const newDia = this.diaRepo.create(createDiaDto);
-    return this.diaRepo.save(newDia);
+  async create(createDiaDto: CreateDiaDto) {
+    const semana = await this.semanaRepository.findOne({
+      where: { id_semana: createDiaDto.id_semana },
+    });
+
+    if (!semana) {
+      throw new NotFoundException('Semana no encontrada');
+    }
+    const dia = await this.diaRepo.create({
+      cant_dias: createDiaDto.cant_dias,
+      semana: semana,
+    });
+    return await this.diaRepo.save(dia);
   }
 
   async findAll(): Promise<Dia[]> {
@@ -40,4 +54,3 @@ export class DiaService {
     await this.diaRepo.remove(dia);
   }
 }
-  

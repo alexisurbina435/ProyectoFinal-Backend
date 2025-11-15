@@ -8,21 +8,6 @@ import { UpdateSemanaDto } from './dto/update.semana.dto';
 
 @Injectable()
 export class SemanaService {
-  remove(arg0: number) {
-      throw new Error('Method not implemented.');
-  }
-  update(arg0: number, updateSemanaDto: UpdateSemanaDto) {
-      throw new Error('Method not implemented.');
-  }
-  findOne(arg0: number) {
-      throw new Error('Method not implemented.');
-  }
-  findAllSemana() {
-      throw new Error('Method not implemented.');
-  }
-  create(createSemanaDto: CreateSemanaDto) {
-      throw new Error('Method not implemented.');
-  }
   constructor(
     @InjectRepository(Semana)
     private SemanaRepository: Repository<Semana>,

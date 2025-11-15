@@ -4,41 +4,39 @@ import {
   Post,
   Put,
   Delete,
-  Patch,
   Body,
   Param,
 } from '@nestjs/common';
 import { SemanaService } from './semana.service';
 import { CreateSemanaDto } from './dto/create.semana.dto';
-import { UpdateSemanaDto } from './dto/update.semana.dto';
-import { SemanaDto } from './dto/semana.dto';
+import type { UpdateSemanaDto } from './dto/update.semana.dto';
 
 @Controller('semana')
 export class SemanaController {
   constructor(private readonly semanaService: SemanaService) {}
 
   @Post()
-  create(@Body() createSemanaDto: CreateSemanaDto) {
-    return this.semanaService.create(createSemanaDto);
+  post(@Body() createSemanaDto: CreateSemanaDto) {
+    return this.semanaService.postSemana(createSemanaDto);
   }
 
   @Get()
-  findAllSemana() {
-    return this.semanaService.findAllSemana();
+  getAllSemana() {
+    return this.semanaService.getAllSemana();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.semanaService.findOne(+id);
+  getSemanaById(@Param('id') id: string) {
+    return this.semanaService.getSemanaById(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSemanaDto: UpdateSemanaDto) {
-    return this.semanaService.update(+id, updateSemanaDto);
+  @Put(':id')
+  putSemana(@Param('id') id: string, @Body() updateSemanaDto: UpdateSemanaDto) {
+    return this.semanaService.putSemana(+id, updateSemanaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.semanaService.remove(+id);
+  deleteSemana(@Param('id') id: string) {
+    return this.semanaService.deleteSemana(+id);
   }
 }

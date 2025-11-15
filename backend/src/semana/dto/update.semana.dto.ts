@@ -1,4 +1,3 @@
-export class UpdateSemanaDto {
-  id_semana?: number;
-  cant_semanas?: number;
-}
+import { CreateSemanaDto } from './create.semana.dto';
+
+export type UpdateSemanaDto = Partial<CreateSemanaDto>;
