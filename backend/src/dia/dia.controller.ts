@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpException,
+  HttpStatus,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { DiaService } from './dia.service';
 import { CreateDiaDto } from './dto/create-dia.dto';
 import { UpdateDiaDto } from './dto/update-dia.dto';
@@ -6,10 +17,11 @@ import { Dia } from './entities/dia.entity';
 
 @Controller('dia')
 export class DiaController {
-  constructor(private readonly diaService: DiaService) { }
+  constructor(private readonly diaService: DiaService) {}
 
   @Post()
   async create(@Body() createDiaDto: CreateDiaDto) {
+    console.log('body reicbido', createDiaDto);
     try {
       return await this.diaService.create(createDiaDto);
     } catch (error) {
@@ -29,8 +41,8 @@ export class DiaController {
 
   @Patch(':id')
   async update(
-      @Param('id') id: number, 
-      @Body() updateDiaDto: UpdateDiaDto
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDiaDto: UpdateDiaDto,
   ): Promise<Dia> {
     return await this.diaService.update(id, updateDiaDto);
   }
