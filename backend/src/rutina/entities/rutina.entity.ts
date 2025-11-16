@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { Usuario } from '../../usuario/entities/usuario.entity';
 import { Semana } from 'src/semana/entities/semana.entity';
@@ -24,9 +25,13 @@ export class Rutina {
   categoria: string;
 
   // RELACIÓN → Muchas Rutinas pertenecen a un Usuario
-  @ManyToOne(() => Usuario, (usuario) => usuario.rutinas, { nullable: true })
+  @ManyToOne(() => Usuario, (usuario) => usuario.rutinas, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  }) // nullable false hace que una rutina si o si debe estar asociadada a un usuario
+  @JoinColumn({ name: 'usuarioIdUsuario' })
   usuario: Usuario;
 
-  @OneToMany(() => Semana, (semana) => semana.rutina)
+  @OneToMany(() => Semana, (semana) => semana.rutina, { cascade: true })
   semanas: Semana[];
 }
