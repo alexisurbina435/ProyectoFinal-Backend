@@ -38,10 +38,10 @@ export class Usuario {
   @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
   email: string;
 
-  @Column({ type: 'int' })
-  telefono: number;
+  @Column({ type: 'varchar', length: 20})
+  telefono: string;
 
-  @Column({ type: 'varchar', length: 30 })
+  @Column({ type: 'varchar', length: 300 })
   password: string;
 
   @Column({ type: 'enum', enum: Rol, default: Rol.USUARIO })
