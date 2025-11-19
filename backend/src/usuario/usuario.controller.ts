@@ -8,14 +8,18 @@ import {
   Param,
   Put,
   NotFoundException,
+  HttpStatus,
+  HttpCode,
+  Res,
 } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import { Usuario } from './entities/usuario.entity';
+import type { Response } from 'express';
 
 @Controller('usuario')
 export class UsuarioController {
-  constructor(private UsuarioService: UsuarioService) {}
+  constructor(private UsuarioService: UsuarioService) { }
 
   @Get()
   async getAllUsuarios() {
@@ -33,10 +37,28 @@ export class UsuarioController {
     return usuario;
   }
 
-  @Post()
+  @Get('email/:email')
+  async findByEmail(@Param('email') email: string) {
+    return this.UsuarioService.findByEmail(email);
+  }
+
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() createUsuarioDto: Usuario, @Res({ passthrough: true }) response: Response) {
+    const { usuario, access_token } = await this.UsuarioService.login(createUsuarioDto.email, createUsuarioDto.password);
+    response.cookie('token', access_token, {
+      httpOnly: true,
+      secure: false, // solo por HTTPS
+      sameSite: 'lax',
+      maxAge: 3600 * 1000, // 1 hora
+    });
+    return { message: 'Login exitoso', usuario };
+  }
+
+  @Post('registro')
   async postUsuario(@Body() createUsuarioDto: Usuario): Promise<Usuario> {
-    const usuario: Usuario =
-      await this.UsuarioService.postUsuario(createUsuarioDto);
+    const usuario: Usuario = await this.UsuarioService.postUsuario(createUsuarioDto);
     return usuario;
   }
 

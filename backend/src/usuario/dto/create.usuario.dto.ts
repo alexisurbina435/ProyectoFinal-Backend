@@ -37,8 +37,10 @@ export class CreateUsuarioDto {
   @Matches(/^(\+54 )?\d{3,4} \d{6}$/, {
     message: 'El número de teléfono no es válido',
   })
-  @IsPhoneNumber('AR', { message: 'El número de teléfono no es válido' })
-  telefono: number;
+  // @IsPhoneNumber('AR', { message: 'El número de teléfono no es válido' })
+  @Matches( /^(\+54 )?\d{3,4} \d{6}$/, { message: 'El número de teléfono no es válido' })
+  @IsString()
+  telefono: string;
 
   @IsNotEmpty()
   @IsString()

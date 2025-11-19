@@ -6,7 +6,7 @@ export class UpdateUsuarioDto {
        nombre?:string;
        apellido?:string;
        dni?:number;
-       telefono?:number;
+       telefono?:string;
        correo?:string;
        rol?: Rol;
        estado_pago?:boolean;
