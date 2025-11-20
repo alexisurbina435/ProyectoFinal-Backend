@@ -17,6 +17,7 @@ import { VentaModule } from './venta/venta.module';
 import { SemanaModule } from './semana/semana.module';
 import { FichaSaludModule } from './ficha-salud/ficha-salud.module';
 import { ProductosModule } from './productos/productos.module';
+import { MercadoPagoModule } from './mercadopago/mercadopago.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { ProductosModule } from './productos/productos.module';
     VentaModule,
     FichaSaludModule,
     ProductosModule,
+    MercadoPagoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
