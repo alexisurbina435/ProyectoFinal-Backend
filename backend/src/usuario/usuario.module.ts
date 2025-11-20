@@ -3,10 +3,13 @@ import { UsuarioController } from './usuario.controller';
 import { UsuarioService } from './usuario.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
-import { JwtModule } from '@nestjs/jwt';
+// import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [JwtModule.register({}),TypeOrmModule.forFeature([Usuario])],
+  //si hay algun error con el usuario probar cambiando los imports(el comentado por el otro)
+  // imports: [JwtModule.register({}),TypeOrmModule.forFeature([Usuario])],
+  imports: [AuthModule,TypeOrmModule.forFeature([Usuario])],
   controllers: [UsuarioController],
   providers: [UsuarioService],
   exports: [UsuarioService],
