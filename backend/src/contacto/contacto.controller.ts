@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, UseGuards, Req } from '@nestjs/common';
 import { ContactoService } from './contacto.service';
 import { CreateContactoDto } from './dto/create-contacto.dto';
 import { UpdateContactoDto } from './dto/update-contacto.dto';
 import { Contacto } from './entities/contacto.entity';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('contacto')
 export class ContactoController {
@@ -19,9 +20,16 @@ export class ContactoController {
       );
     }
   }
-
+  @UseGuards(AuthGuard)
   @Get()
-  async findAll(): Promise<Contacto[]> {
+  async findAll(@Req() req: Request): Promise<Contacto[]> {
+    const usuario = req['usuario'];
+    if(!usuario || usuario.rol !== 'admin'){
+      throw new HttpException(
+        'No tienes permiso para ver las consultas',
+        HttpStatus.FORBIDDEN,
+      );
+    }
     try {
       return await this.contactoService.findAll();
     } catch (error) {

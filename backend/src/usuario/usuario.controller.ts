@@ -11,16 +11,18 @@ import {
   HttpStatus,
   HttpCode,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import { Usuario } from './entities/usuario.entity';
 import type { Response } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('usuario')
 export class UsuarioController {
   constructor(private UsuarioService: UsuarioService) { }
-
+  
   @Get()
   async getAllUsuarios() {
     const usuario = await this.UsuarioService.getAllUsuario();
@@ -42,19 +44,18 @@ export class UsuarioController {
     return this.UsuarioService.findByEmail(email);
   }
 
-
-  @Post('login')
-  @HttpCode(HttpStatus.OK)
-  async login(@Body() createUsuarioDto: Usuario, @Res({ passthrough: true }) response: Response) {
-    const { usuario, access_token } = await this.UsuarioService.login(createUsuarioDto.email, createUsuarioDto.password);
-    response.cookie('token', access_token, {
-      httpOnly: true,
-      secure: false, // solo por HTTPS
-      sameSite: 'lax',
-      maxAge: 3600 * 1000, // 1 hora
-    });
-    return { message: 'Login exitoso', usuario };
-  }
+  // @Post('login')
+  // @HttpCode(HttpStatus.OK)
+  // async login(@Body() createUsuarioDto: Usuario, @Res({ passthrough: true }) response: Response) {
+  //   const { usuario, access_token } = await this.UsuarioService.login(createUsuarioDto.email, createUsuarioDto.password);
+  //   response.cookie('token', access_token, {
+  //     httpOnly: true,
+  //     secure: true, // solo por HTTPS
+  //     sameSite: 'strict',
+  //     maxAge: 3600 * 1000, // 1 hora
+  //   });
+  //   return { message: 'Login exitoso', usuario };
+  // }
 
   @Post('registro')
   async postUsuario(@Body() createUsuarioDto: Usuario): Promise<Usuario> {
