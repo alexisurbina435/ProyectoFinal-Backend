@@ -19,6 +19,7 @@ import { FichaSaludModule } from './ficha-salud/ficha-salud.module';
 import { ProductosModule } from './productos/productos.module';
 import { MercadoPagoModule } from './mercadopago/mercadopago.module';
 
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,6 +37,13 @@ import { MercadoPagoModule } from './mercadopago/mercadopago.module';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         //  synchronize:false, // la dejamos en false cuando tenemos las tablas creadas y no queremos que nos cambie o modifique las tablas.(solo consultas a la base de dato)
         synchronize: configService.get('NODE_ENV') === 'development', // cuando queremos modificar o cargar tablas usamos este.
+      }),
+      inject: [ConfigService],
+    }),JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
+        secret: config.get('JWT_SECRET'),
+        signOptions: { expiresIn: config.get('JWT_EXPIRES_IN') },
       }),
       inject: [ConfigService],
     }),
