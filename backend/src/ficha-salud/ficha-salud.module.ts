@@ -4,9 +4,10 @@ import { FichaSaludController } from './ficha-salud.controller';
 import { FichaSalud } from './entities/ficha-salud.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FichaSalud, Usuario])],
+  imports: [AuthModule,TypeOrmModule.forFeature([FichaSalud, Usuario])],
   controllers: [FichaSaludController],
   providers: [FichaSaludService],
 })

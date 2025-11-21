@@ -20,6 +20,7 @@ import { ProductosModule } from './productos/productos.module';
 import { MercadoPagoModule } from './mercadopago/mercadopago.module';
 
 import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,13 +40,6 @@ import { JwtModule } from '@nestjs/jwt';
         synchronize: configService.get('NODE_ENV') === 'development', // cuando queremos modificar o cargar tablas usamos este.
       }),
       inject: [ConfigService],
-    }),JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (config: ConfigService) => ({
-        secret: config.get('JWT_SECRET'),
-        signOptions: { expiresIn: config.get('JWT_EXPIRES_IN') },
-      }),
-      inject: [ConfigService],
     }),
     SemanaModule,
     RutinaModule,
@@ -61,6 +55,7 @@ import { JwtModule } from '@nestjs/jwt';
     FichaSaludModule,
     ProductosModule,
     MercadoPagoModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

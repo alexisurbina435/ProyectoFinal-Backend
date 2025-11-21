@@ -36,7 +36,8 @@ export class UsuarioService {
   }
 
   findByEmail(email: string) {
-    return this.usuarioRepository.findOne({ where: { email } });
+    const usuario = this.usuarioRepository.findOne({ where: { email } });
+    return usuario;
   }
   // fin testeo 
   async getAllUsuario(): Promise<Usuario[]> {
@@ -69,40 +70,40 @@ export class UsuarioService {
     }
   }
 
-  async login(email: string, passwordd: string): Promise<Usuario | any> {
-    const usuario = await this.usuarioRepository.findOne({ where: { email } });
-    if (!usuario) {
-      throw new BadRequestException('El usuario no existe');
-    }
-    const passwordValida = await bcrypt.compare(passwordd, usuario.password);
-    if (!passwordValida) {
-      throw new BadRequestException('La contraseña es incorrecta');
-    }
-    // quito la contraseña al logear 
-    const { password: _, ...publicUser } = usuario;
+  // async login(email: string, passwordd: string): Promise<Usuario | any> {
+  //   const usuario = await this.usuarioRepository.findOne({ where: { email } });
+  //   if (!usuario) {
+  //     throw new BadRequestException('El usuario no existe');
+  //   }
+  //   const passwordValida = await bcrypt.compare(passwordd, usuario.password);
+  //   if (!passwordValida) {
+  //     throw new BadRequestException('La contraseña es incorrecta');
+  //   }
+  //   // quito la contraseña al logear 
+  //   const { password: _, ...publicUser } = usuario;
 
-    const payload = {
-      sub: usuario.id_usuario,
-      email: usuario.email,
-      telefono: usuario.telefono,
-      rol: usuario.rol,
-    };
+  //   const payload = {
+  //     sub: usuario.id_usuario,
+  //     email: usuario.email,
+  //     telefono: usuario.telefono,
+  //     rol: usuario.rol,
+  //   };
 
-    const secret = this.configService.get<string>('JWT_SECRET');
-    const expiresIn = this.configService.get<number>('JWT_EXPIRES_IN');
+  //   const secret = this.configService.get<string>('JWT_SECRET');
+  //   const expiresIn = this.configService.get<number>('JWT_EXPIRES_IN');
 
-    const access_token = this.jwtService.sign(payload, {
-      secret: secret,
-      expiresIn: expiresIn,
-    });
+  //   const access_token = this.jwtService.sign(payload, {
+  //     secret: secret,
+  //     expiresIn: expiresIn,
+  //   });
 
 
-    return {
-      usuario: publicUser,
-      access_token,
-    };
+  //   return {
+  //     usuario: publicUser,
+  //     access_token,
+  //   };
 
-  }
+  // }
 
   async putUsuario(
     id: number,

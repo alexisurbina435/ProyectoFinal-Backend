@@ -1,10 +1,11 @@
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString, Length, ValidateIf } from "class-validator";
+import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Length, ValidateIf } from "class-validator";
 import { Sexo, TipoClase } from "../entities/ficha-salud.entity";
 import { Unique } from "typeorm";
 import { Type } from "class-transformer";
 
 export class CreateFichaSaludDto {
 
+        @Type(() => Number)
         @IsNumber()
         @IsNotEmpty()
         @IsPositive()
@@ -30,6 +31,7 @@ export class CreateFichaSaludDto {
         @Length(3, 50, { message: 'La provincia debe tener entre 5 y 50 caracteres' })
         provincia: string;
 
+        @Type(() => Number)
         @IsNumber()
         @IsNotEmpty()
         @IsPositive()
@@ -47,27 +49,27 @@ export class CreateFichaSaludDto {
         @IsNotEmpty()
         @IsEnum(TipoClase)
         clase: TipoClase;
-        
+
+        @Type(() => Boolean)
         @IsBoolean()
         @IsNotEmpty()
         condicion: boolean;
-        
+
         @IsString()
-        @ValidateIf((objeto) => objeto.condicon === true)
-        @Length(10, 200, { message: 'La lesion debe tener entre 2 y 200 caracteres' })
-        @IsNotEmpty()
+        @IsOptional()
         lesion: string;
 
+        @Type(() => Boolean)
         @IsBoolean()
         @IsNotEmpty()
         medicacion: boolean;
 
         @IsString()
-        @ValidateIf((objeto) => objeto.medicacion === true)
-        @Length(10, 200, { message: 'El medicamento debe tener entre 2 y 200 caracteres' })
-        @IsNotEmpty()
+        @IsOptional()
+        // @Length(10, 200, { message: 'El medicamento debe tener entre 2 y 200 caracteres' })
         medicamento: string;
 
+        @Type(() => Boolean)
         @IsBoolean()
         @IsNotEmpty()
         expEntrenando: boolean;
