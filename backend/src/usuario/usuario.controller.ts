@@ -4,25 +4,23 @@ import {
   Post,
   Body,
   Delete,
-  InternalServerErrorException,
   Param,
   Put,
   NotFoundException,
-  HttpStatus,
-  HttpCode,
-  Res,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import { Usuario } from './entities/usuario.entity';
-import type { Response } from 'express';
+
 import { AuthGuard } from 'src/auth/auth.guard';
+
 
 @Controller('usuario')
 export class UsuarioController {
   constructor(private UsuarioService: UsuarioService) { }
-  
+
   @Get()
   async getAllUsuarios() {
     const usuario = await this.UsuarioService.getAllUsuario();
@@ -30,14 +28,17 @@ export class UsuarioController {
   }
 
   @Get(':id')
-  async getUsuarioById(@Param() params) {
-    const id = params.id;
-    const usuario = await this.UsuarioService.getUsuarioById(id);
-    if (!usuario) {
-      throw new InternalServerErrorException(' El usuario no existe');
-    }
-    return usuario;
+  @UseGuards(AuthGuard)
+  async getUsuarioById(@Req() req: Request) {
+
+    const usuario = req['usuario'];
+    //console log para ver los datos del usuario en el token , borrar despues
+    console.log("Usuario desde token:", usuario);
+
+    return this.UsuarioService.getUsuarioById(usuario.id_usuario);
   }
+
+
 
   @Get('email/:email')
   async findByEmail(@Param('email') email: string) {

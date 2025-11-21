@@ -5,7 +5,7 @@ import { Usuario } from 'src/usuario/entities/usuario.entity';
 import type { Response } from 'express';
 @Controller('auth')
 export class AuthController {
-  UsuarioService: any;
+  // UsuarioService: any;
   constructor(private readonly authService: AuthService) { }
 
   @Post('login')
