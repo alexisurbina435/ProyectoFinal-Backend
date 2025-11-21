@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Rutina } from './entities/rutina.entity';
 import { Repository } from 'typeorm';
-import { CreateRutinaDto, RutinaDto, UpdateRutinaDto } from './dto';
+import { CreateRutinaDto, UpdateRutinaDto } from './dto';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
 
 @Injectable()
@@ -19,8 +19,8 @@ export class RutinaService {
     private readonly usuarioRepository: Repository<Usuario>,
   ) {}
 
-  async getAllRutinas(): Promise<RutinaDto[]> {
-    const rutina: RutinaDto[] = await this.rutinaRepository.find();
+  async getAllRutinas(): Promise<Rutina[]> {
+    const rutina: Rutina[] = await this.rutinaRepository.find();
     return rutina;
   }
 
@@ -51,7 +51,7 @@ export class RutinaService {
   async putRutina(
     id: number,
     updateRutinaDto: UpdateRutinaDto,
-  ): Promise<RutinaDto | null> {
+  ): Promise<Rutina | null> {
     const rutina = this.rutinaRepository.create(updateRutinaDto);
     const result = await this.rutinaRepository.update(
       { id_rutina: id },
