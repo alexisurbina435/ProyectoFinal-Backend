@@ -17,12 +17,12 @@ async function bootstrap() {
   // Validamos y transformamos los DTO para que respeten los tipos declarados
   app.useGlobalPipes(
     new ValidationPipe({
-      // transform: true,
-      // transformOptions: {
-      //   enableImplicitConversion: true,
-      // },
-      // whitelist: true,
-      // forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      whitelist: true,
+      forbidNonWhitelisted: true,
     }),
   );
   await app.listen(process.env.PORT ?? 3000);
