@@ -4,6 +4,7 @@ import { tipoPlan } from '../entities/usuario.entity';
 import {
   Equals,
   IsEmail,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -57,6 +58,10 @@ export class CreateUsuarioDto {
   ficha?: FichaSalud;
 
   rol: Rol;
-  tipoPlan: tipoPlan;
+  // tipoPlan: tipoPlan;
   estado_pago: boolean;
+  @IsInt()
+  @IsOptional()
+  id_plan?: number; // FK hacia Plan
+
 }

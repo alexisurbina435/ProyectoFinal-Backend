@@ -12,6 +12,7 @@ import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { Plan } from 'src/plan/entities/plan.entity';
 
 
 
@@ -22,6 +23,9 @@ export class UsuarioService {
     private usuarioRepository: Repository<Usuario>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    @InjectRepository(Plan)
+    private readonly planRepo: Repository<Plan>,
+
 
 
 
@@ -41,13 +45,13 @@ export class UsuarioService {
   }
   // fin testeo 
   async getAllUsuario(): Promise<Usuario[]> {
-    const usuario: Usuario[] = await this.usuarioRepository.find();
+    const usuario: Usuario[] = await this.usuarioRepository.find({relations: ['plan'] });
     return usuario;
   }
 
   async getUsuarioById(id: number): Promise<Usuario> {
     const usuario = await this.usuarioRepository.findOne({
-      where: { id_usuario: id }, relations: ['ficha']
+      where: { id_usuario: id }, relations: ['ficha', 'plan'],
     });
     if (!usuario) {
       throw new NotFoundException(`usuario con ${id} no existe`);
@@ -57,10 +61,13 @@ export class UsuarioService {
 
   async postUsuario(CreateUsuarioDto: CreateUsuarioDto): Promise<Usuario> {
     try {
+      const plan = await this.planRepo.findOne({where: {id_plan: CreateUsuarioDto.id_plan}});
       const hashedPassword = await bcrypt.hash(CreateUsuarioDto.password, 10);
       const newUsuario = this.usuarioRepository.create({
         ...CreateUsuarioDto,
         password: hashedPassword,
+        ...(plan ? { plan } : {}),
+        
       });
 
       const usuario = await this.usuarioRepository.save(newUsuario);

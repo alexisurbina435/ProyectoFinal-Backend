@@ -37,7 +37,8 @@ export class AuthService {
         email: usuario.email,
         telefono: usuario.telefono,
         rol: usuario.rol,
-        tipoPlan: usuario.tipoPlan,
+        // tipoPlan: usuario.tipoPlan,
+        id_plan: usuario.plan?.id_plan,
         estadoPago: usuario.estado_pago,
       };
   

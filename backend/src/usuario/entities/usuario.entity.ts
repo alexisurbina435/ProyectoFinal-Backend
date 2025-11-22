@@ -4,11 +4,14 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   OneToOne,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Rutina } from 'src/rutina/entities/rutina.entity';
 import { Venta } from 'src/venta/entities/venta.entity';
 import { Blog } from 'src/blog/entities/blog.entity';
 import { FichaSalud } from 'src/ficha-salud/entities/ficha-salud.entity';
+import { Plan } from 'src/plan/entities/plan.entity';
 
 export enum Rol {
   USUARIO = 'usuario',
@@ -44,11 +47,16 @@ export class Usuario {
   @Column({ type: 'enum', enum: Rol, default: Rol.USUARIO })
   rol: Rol;
 
-  @Column({ type: 'enum', enum: tipoPlan, nullable: true })
-  tipoPlan: tipoPlan;
+  // @Column({ type: 'enum', enum: tipoPlan, nullable: true })
+  // tipoPlan: tipoPlan;
 
   @Column({ type: 'boolean', default: false })
   estado_pago: boolean;
+
+  @ManyToOne(() => Plan, (plan) => plan.usuarios, { nullable: true })
+  @JoinColumn({ name: 'id_plan' }) // FK en la tabla usuario
+  plan?: Plan;
+
 
   //Relación one to one con fichaSalud
   // la ficha es opcional, por que depende de que se inscriba a un plan el usuario
