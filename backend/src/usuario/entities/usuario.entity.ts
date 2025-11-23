@@ -11,8 +11,8 @@ import { Blog } from 'src/blog/entities/blog.entity';
 import { FichaSalud } from 'src/ficha-salud/entities/ficha-salud.entity';
 
 export enum Rol {
-  USUARIO = 'Usuario',
-  ADMIN = 'Admin',
+  USUARIO = 'usuario',
+  ADMIN = 'admin',
 }
 
 export enum tipoPlan {
@@ -32,10 +32,7 @@ export class Usuario {
   @Column({ type: 'varchar', length: 45 })
   apellido: string;
 
-  @Column({ type: 'int', unique: true, nullable: true })
-  dni: number;
-
-  @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
+  @Column({ type: 'varchar', length: 255, unique: true})
   email: string;
 
   @Column({ type: 'varchar', length: 20})

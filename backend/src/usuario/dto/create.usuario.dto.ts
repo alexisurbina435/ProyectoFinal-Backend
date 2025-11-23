@@ -56,7 +56,6 @@ export class CreateUsuarioDto {
   @ValidateNested()
   ficha?: FichaSalud;
 
-  dni: number;
   rol: Rol;
   tipoPlan: tipoPlan;
   estado_pago: boolean;

@@ -4,18 +4,18 @@ import {
   Post,
   Body,
   Delete,
-  InternalServerErrorException,
   Param,
   Put,
   NotFoundException,
-  HttpStatus,
-  HttpCode,
-  Res,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import { Usuario } from './entities/usuario.entity';
-import type { Response } from 'express';
+
+import { AuthGuard } from 'src/auth/auth.guard';
+
 
 @Controller('usuario')
 export class UsuarioController {
@@ -28,33 +28,35 @@ export class UsuarioController {
   }
 
   @Get(':id')
-  async getUsuarioById(@Param() params) {
-    const id = params.id;
-    const usuario = await this.UsuarioService.getUsuarioById(id);
-    if (!usuario) {
-      throw new InternalServerErrorException(' El usuario no existe');
-    }
-    return usuario;
+  @UseGuards(AuthGuard)
+  async getUsuarioById(@Req() req: Request) {
+
+    const usuario = req['usuario'];
+    //console log para ver los datos del usuario en el token , borrar despues
+    console.log("Usuario desde token:", usuario);
+
+    return this.UsuarioService.getUsuarioById(usuario.id_usuario);
   }
+
+
 
   @Get('email/:email')
   async findByEmail(@Param('email') email: string) {
     return this.UsuarioService.findByEmail(email);
   }
 
-
-  @Post('login')
-  @HttpCode(HttpStatus.OK)
-  async login(@Body() createUsuarioDto: Usuario, @Res({ passthrough: true }) response: Response) {
-    const { usuario, access_token } = await this.UsuarioService.login(createUsuarioDto.email, createUsuarioDto.password);
-    response.cookie('token', access_token, {
-      httpOnly: true,
-      secure: false, // solo por HTTPS
-      sameSite: 'lax',
-      maxAge: 3600 * 1000, // 1 hora
-    });
-    return { message: 'Login exitoso', usuario };
-  }
+  // @Post('login')
+  // @HttpCode(HttpStatus.OK)
+  // async login(@Body() createUsuarioDto: Usuario, @Res({ passthrough: true }) response: Response) {
+  //   const { usuario, access_token } = await this.UsuarioService.login(createUsuarioDto.email, createUsuarioDto.password);
+  //   response.cookie('token', access_token, {
+  //     httpOnly: true,
+  //     secure: true, // solo por HTTPS
+  //     sameSite: 'strict',
+  //     maxAge: 3600 * 1000, // 1 hora
+  //   });
+  //   return { message: 'Login exitoso', usuario };
+  // }
 
   @Post('registro')
   async postUsuario(@Body() createUsuarioDto: Usuario): Promise<Usuario> {
