@@ -21,6 +21,7 @@ import { MercadoPagoModule } from './mercadopago/mercadopago.module';
 
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
+import { SuscripcionModule } from './suscripcion/suscripcion.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -56,6 +57,7 @@ import { AuthModule } from './auth/auth.module';
     ProductosModule,
     MercadoPagoModule,
     AuthModule,
+    SuscripcionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
