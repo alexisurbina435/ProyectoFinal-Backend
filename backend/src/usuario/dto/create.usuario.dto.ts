@@ -3,7 +3,10 @@ import { Rol } from '../entities/usuario.entity';
 import { tipoPlan } from '../entities/usuario.entity';
 import {
   Equals,
+  IsBoolean,
   IsEmail,
+  IsEnum,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -33,12 +36,10 @@ export class CreateUsuarioDto {
   email: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Matches(/^(\+54 )?\d{3,4} \d{6}$/, {
-    message: 'El número de teléfono no es válido',
-  })
-  @IsPhoneNumber('AR', { message: 'El número de teléfono no es válido' })
-  telefono: number;
+  // @IsPhoneNumber('AR', { message: 'El número de teléfono no es válido' })
+  @Matches(/^(\+54\s?)?\d{3,4}\s?\d{6}$/, { message: 'El número de teléfono no es válido' })
+  @IsString()
+  telefono: string;
 
   @IsNotEmpty()
   @IsString()
@@ -54,8 +55,13 @@ export class CreateUsuarioDto {
   @ValidateNested()
   ficha?: FichaSalud;
 
-  dni: number;
+  @IsEnum(Rol)
   rol: Rol;
-  tipoPlan: tipoPlan;
+  // tipoPlan: tipoPlan;
+  @IsBoolean()
   estado_pago: boolean;
+  // @IsInt()
+  // @IsOptional()
+  // id_plan?: number; // FK hacia Plan
+
 }

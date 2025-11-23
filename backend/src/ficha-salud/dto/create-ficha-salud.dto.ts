@@ -1,10 +1,11 @@
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString, Length, ValidateIf } from "class-validator";
-import { Sexo, TipoClase } from "../entities/ficha-salud.entity";
+import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Length, ValidateIf } from "class-validator";
+import { Confirmacion, Sexo, TipoClase } from "../entities/ficha-salud.entity";
 import { Unique } from "typeorm";
 import { Type } from "class-transformer";
 
 export class CreateFichaSaludDto {
 
+        @Type(() => Number)
         @IsNumber()
         @IsNotEmpty()
         @IsPositive()
@@ -30,6 +31,7 @@ export class CreateFichaSaludDto {
         @Length(3, 50, { message: 'La provincia debe tener entre 5 y 50 caracteres' })
         provincia: string;
 
+        @Type(() => Number)
         @IsNumber()
         @IsNotEmpty()
         @IsPositive()
@@ -47,37 +49,41 @@ export class CreateFichaSaludDto {
         @IsNotEmpty()
         @IsEnum(TipoClase)
         clase: TipoClase;
-        
-        @IsBoolean()
+
+        // @Type(() => Boolean)
+        // @IsBoolean()
+        @IsEnum(Confirmacion)
         @IsNotEmpty()
-        condicion: boolean;
-        
+        condicion: Confirmacion;
+
         @IsString()
-        @ValidateIf((objeto) => objeto.condicon === true)
-        @Length(10, 200, { message: 'La lesion debe tener entre 2 y 200 caracteres' })
-        @IsNotEmpty()
+        @IsOptional()
         lesion: string;
 
-        @IsBoolean()
+        // @Type(() => Boolean)
+        // @IsBoolean()
+        @IsEnum(Confirmacion)
         @IsNotEmpty()
-        medicacion: boolean;
+        medicacion: Confirmacion;
 
         @IsString()
-        @ValidateIf((objeto) => objeto.medicacion === true)
-        @Length(10, 200, { message: 'El medicamento debe tener entre 2 y 200 caracteres' })
-        @IsNotEmpty()
+        @IsOptional()
+        // @Length(10, 200, { message: 'El medicamento debe tener entre 2 y 200 caracteres' })
         medicamento: string;
 
-        @IsBoolean()
+        // @Type(() => Boolean)
+        // @IsBoolean()
+        @IsEnum(Confirmacion)
         @IsNotEmpty()
-        expEntrenando: boolean;
+        expEntrenando: Confirmacion;
 
         @IsNotEmpty()
         @IsString()
         @Length(10, 200, { message: 'El objetivo debe tener entre 2 y 200 caracteres' })
         objetivos: string;
-
+        
         // el id del usuario va a ser unico por planilla 
+        @IsNumber()
         @Unique(['id_usuario'])
         id_usuario: number;
 }
