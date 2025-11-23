@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, HttpCode, HttpStatus, Res } from '@nestjs/
 import { AuthService } from './auth.service';
 import { CreateUsuarioDto } from 'src/usuario/dto';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
-import type { Response } from 'express';
+import { response, type Response } from 'express';
 @Controller('auth')
 export class AuthController {
   // UsuarioService: any;
@@ -20,4 +20,14 @@ export class AuthController {
     });
     return { message: 'Login exitoso', usuario };
   }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('token');
+    return { message: 'Logout exitoso' };
+  }
 }
+
+
+
