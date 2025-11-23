@@ -13,6 +13,11 @@ export enum TipoClase {
     MIXTO = 'mixto',
 }
 
+export enum Confirmacion{
+    SI = 'si',
+    NO = 'no',
+}
+
 @Entity()
 export class FichaSalud {
 
@@ -46,20 +51,20 @@ export class FichaSalud {
     @Column({ type: 'enum', enum: TipoClase })
     clase: TipoClase;
 
-    @Column({ type: 'tinyint' })
-    condicion: boolean;
+    @Column({ type: 'enum', enum: Confirmacion })
+    condicion: Confirmacion;
 
     @Column({ type: 'varchar', nullable: true, length: 200 })
     lesion: string;
 
-    @Column({ type: 'tinyint' })
-    medicacion: boolean;
+    @Column({ type: 'enum', enum: Confirmacion })
+    medicacion: Confirmacion;
 
     @Column({ type: 'varchar', nullable: true, length: 200 })
     medicamento: string;
 
-    @Column({ type: 'tinyint' })
-    expEntrenando: boolean;
+    @Column({ type: 'enum', enum: Confirmacion })
+    expEntrenando: Confirmacion;
 
     @Column({ type: 'varchar', length: 200 })
     objetivos: string;

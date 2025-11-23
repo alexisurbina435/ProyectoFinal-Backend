@@ -1,5 +1,5 @@
 import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Length, ValidateIf } from "class-validator";
-import { Sexo, TipoClase } from "../entities/ficha-salud.entity";
+import { Confirmacion, Sexo, TipoClase } from "../entities/ficha-salud.entity";
 import { Unique } from "typeorm";
 import { Type } from "class-transformer";
 
@@ -50,36 +50,40 @@ export class CreateFichaSaludDto {
         @IsEnum(TipoClase)
         clase: TipoClase;
 
-        @Type(() => Boolean)
-        @IsBoolean()
+        // @Type(() => Boolean)
+        // @IsBoolean()
+        @IsEnum(Confirmacion)
         @IsNotEmpty()
-        condicion: boolean;
+        condicion: Confirmacion;
 
         @IsString()
         @IsOptional()
         lesion: string;
 
-        @Type(() => Boolean)
-        @IsBoolean()
+        // @Type(() => Boolean)
+        // @IsBoolean()
+        @IsEnum(Confirmacion)
         @IsNotEmpty()
-        medicacion: boolean;
+        medicacion: Confirmacion;
 
         @IsString()
         @IsOptional()
         // @Length(10, 200, { message: 'El medicamento debe tener entre 2 y 200 caracteres' })
         medicamento: string;
 
-        @Type(() => Boolean)
-        @IsBoolean()
+        // @Type(() => Boolean)
+        // @IsBoolean()
+        @IsEnum(Confirmacion)
         @IsNotEmpty()
-        expEntrenando: boolean;
+        expEntrenando: Confirmacion;
 
         @IsNotEmpty()
         @IsString()
         @Length(10, 200, { message: 'El objetivo debe tener entre 2 y 200 caracteres' })
         objetivos: string;
-
+        
         // el id del usuario va a ser unico por planilla 
+        @IsNumber()
         @Unique(['id_usuario'])
         id_usuario: number;
 }
