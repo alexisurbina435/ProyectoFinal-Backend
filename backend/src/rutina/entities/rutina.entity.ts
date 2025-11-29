@@ -46,7 +46,7 @@ export class Rutina {
     onDelete: 'CASCADE',
     nullable: false,
   }) // nullable false hace que una rutina si o si debe estar asociadada a un usuario
-  @JoinColumn({ name: 'usuarioIdUsuario' })
+  @JoinColumn({ name: 'id_usuarioUsuario' })
   usuario: Usuario;
 
   @OneToMany(() => Semana, (semana) => semana.rutina, { cascade: true })
