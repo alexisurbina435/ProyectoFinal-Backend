@@ -48,16 +48,17 @@ export class Usuario {
   @Column({ type: 'enum', enum: Rol, default: Rol.USUARIO })
   rol: Rol;
 
-  // @Column({ type: 'enum', enum: tipoPlan, nullable: true })
-  // tipoPlan: tipoPlan;
-
   @Column({ type: 'boolean', default: false })
   estado_pago: boolean;
 
-  // @ManyToOne(() => Plan, (plan) => plan.usuarios, { nullable: true })
-  // @JoinColumn({ name: 'id_plan' }) // FK en la tabla usuario
-  // plan?: Plan;
+  @Column()
+  aceptarEmails: boolean;
 
+  @Column()
+  aceptarWpp: boolean;
+
+  @Column()
+  aceptarTerminos: boolean;
 
   //Relación one to one con fichaSalud
   // la ficha es opcional, por que depende de que se inscriba a un plan el usuario

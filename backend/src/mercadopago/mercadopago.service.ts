@@ -23,7 +23,7 @@ export class MercadoPagoService {
         this.preapproval = new PreApproval(client);
     }
 
-    // Crear una preferencia de pago normal (opcional, para productos)
+    // Crear una preferencia de pago normal para productos
     async crearPreferencia() {
         try {
             const result = await this.preference.create({
