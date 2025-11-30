@@ -43,14 +43,16 @@ export class UsuarioService {
   }
   // fin testeo 
   async getAllUsuario(): Promise<Usuario[]> {
-    const usuario: Usuario[] = await this.usuarioRepository.find({ relations: ['ficha', 'suscripciones'] });
+    const usuario: Usuario[] = await this.usuarioRepository.find({ 
+      relations: ['ficha', 'suscripciones', 'suscripciones.plan'] 
+    });
     return usuario;
   }
 
   async getUsuarioById(id: number): Promise<Usuario> {
     const usuario = await this.usuarioRepository.findOne({
-      where: { id_usuario: id },
-      relations: ['ficha', 'suscripciones', 'rutina_activa'],
+      where: { id_usuario: id }, 
+      relations: ['ficha', 'suscripciones', 'suscripciones.plan', 'rutina_activa', 'rutina_activa.semanas', 'rutina_activa.semanas.dias', 'rutina_activa.semanas.dias.dificultades', 'rutina_activa.semanas.dias.dificultades.ejercicio'],
     });
     if (!usuario) {
       throw new NotFoundException(`usuario con ${id} no existe`);
