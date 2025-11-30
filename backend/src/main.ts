@@ -11,11 +11,17 @@ async function bootstrap() {
   // app.use(cors());
   app.setGlobalPrefix('api');
   app.use(cookieParser());
-  app.enableCors({
-  origin:  'http://localhost:5173',
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, 
-});
+//   app.enableCors({
+//   origin:  'http://localhost:5173',
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true, 
+// });
+app.enableCors({
+  origin: ['https://proyectofinal-backend-7797.onrender.com',  /// direccion que te provee la pagina render
+            'http://localhost:5173'],
+           METHODS: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+          credentials: false,
+ });
 
   // Validamos y transformamos los DTO para que respeten los tipos declarados
   app.useGlobalPipes(
