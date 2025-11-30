@@ -263,6 +263,14 @@ export class RutinaService {
         }
       }
 
+      // 4. Si es una rutina de tipo CLIENTE, asignarla como rutina activa del usuario
+      if (createRutinaCompletaDto.tipo_rutina === TipoRutina.CLIENTE && usuario) {
+        await queryRunner.manager.update(Usuario, 
+          { id_usuario: usuario.id_usuario },
+          { rutina_activa: rutinaGuardada }
+        );
+      }
+
       // Si todo salió bien, hacer commit
       await queryRunner.commitTransaction();
 
