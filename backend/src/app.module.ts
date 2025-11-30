@@ -18,9 +18,11 @@ import { SemanaModule } from './semana/semana.module';
 import { FichaSaludModule } from './ficha-salud/ficha-salud.module';
 import { ProductosModule } from './productos/productos.module';
 import { MercadoPagoModule } from './mercadopago/mercadopago.module';
+import { CarritoModule } from './carrito/carrito.module';
 
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
+import { SuscripcionModule } from './suscripcion/suscripcion.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,11 +32,11 @@ import { AuthModule } from './auth/auth.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASSWORD'),
-        database: configService.get('DB_DATABASE'),
+        host: configService.get('MYSQL_ADDON_HOST'),
+        port: configService.get('MYSQL_ADDON_PORT'),
+        username: configService.get('MYSQL_ADDON_USER'),
+        password: configService.get('MYSQL_ADDON_PASSWORD'),
+        database: configService.get('MYSQL_ADDON_DB'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         //  synchronize:false, // la dejamos en false cuando tenemos las tablas creadas y no queremos que nos cambie o modifique las tablas.(solo consultas a la base de dato)
         synchronize: configService.get('NODE_ENV') === 'development', // cuando queremos modificar o cargar tablas usamos este.
@@ -56,6 +58,8 @@ import { AuthModule } from './auth/auth.module';
     ProductosModule,
     MercadoPagoModule,
     AuthModule,
+    SuscripcionModule,
+    CarritoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

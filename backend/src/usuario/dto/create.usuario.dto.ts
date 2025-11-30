@@ -3,7 +3,9 @@ import { Rol } from '../entities/usuario.entity';
 import { tipoPlan } from '../entities/usuario.entity';
 import {
   Equals,
+  IsBoolean,
   IsEmail,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -18,32 +20,30 @@ import { FichaSalud } from 'src/ficha-salud/entities/ficha-salud.entity';
 
 export class CreateUsuarioDto {
 
-  @IsNotEmpty()
+  @IsNotEmpty({message: 'El nombre es requerido'})
   @IsString()
+  @Matches(/^[A-Za-z\s]+$/, { message: 'El nombre debe contener solo letras y espacios' })
   nombre: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({message: 'El apellido es requerido'})
   @IsString()
+  @Matches(/^[A-Za-z\s]+$/, { message: 'El apellido debe contener solo letras y espacios' })
   apellido: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({message: 'El email es requerido'})
   @IsEmail()
   @Matches(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/, {
     message: 'El correo no es válido',
   })
   email: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  @Matches(/^(\+54 )?\d{3,4} \d{6}$/, {
-    message: 'El número de teléfono no es válido',
-  })
+  @IsNotEmpty({message: 'El teléfono es requerido'})
   // @IsPhoneNumber('AR', { message: 'El número de teléfono no es válido' })
-  @Matches( /^(\+54 )?\d{3,4} \d{6}$/, { message: 'El número de teléfono no es válido' })
+  @Matches(/^(\+54\s?)?\d{3,4}\s?\d{6}$/, { message: 'El número de teléfono no es válido' })
   @IsString()
   telefono: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({message: 'La password es requerida'})
   @IsString()
   password: string;
 
@@ -57,11 +57,23 @@ export class CreateUsuarioDto {
   @ValidateNested()
   ficha?: FichaSalud;
 
+  @IsEnum(Rol)
   rol: Rol;
-  // tipoPlan: tipoPlan;
+  
+  @IsBoolean()
   estado_pago: boolean;
-  @IsInt()
+
   @IsOptional()
-  id_plan?: number; // FK hacia Plan
+  @IsBoolean()
+  aceptarEmails: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  aceptarWpp: boolean;
+
+  @IsBoolean()
+  @IsNotEmpty({message: 'El aceptar Terminos es requerido'})
+  aceptarTerminos: boolean;
+  
 
 }
