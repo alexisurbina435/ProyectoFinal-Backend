@@ -57,11 +57,20 @@ export class CreateUsuarioDto {
 
   @IsEnum(Rol)
   rol: Rol;
-  // tipoPlan: tipoPlan;
+  
   @IsBoolean()
   estado_pago: boolean;
-  // @IsInt()
-  // @IsOptional()
-  // id_plan?: number; // FK hacia Plan
+
+  @IsOptional()
+  @IsBoolean()
+  aceptarEmails: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  aceptarWpp: boolean;
+
+  @IsBoolean()
+  aceptarTerminos: boolean;
+  
 
 }
