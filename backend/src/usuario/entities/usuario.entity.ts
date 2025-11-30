@@ -51,10 +51,10 @@ export class Usuario {
   @Column({ type: 'boolean', default: false })
   estado_pago: boolean;
 
-  @Column()
+  @Column({type: 'boolean', default: false })
   aceptarEmails: boolean;
 
-  @Column()
+  @Column({type: 'boolean', default: false })
   aceptarWpp: boolean;
 
   @Column()
