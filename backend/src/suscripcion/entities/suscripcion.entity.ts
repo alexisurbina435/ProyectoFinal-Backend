@@ -8,11 +8,11 @@ export class Suscripcion {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Usuario, (usuario) => usuario.suscripciones, { eager: true })
+    @ManyToOne(() => Usuario, (usuario) => usuario.suscripciones, { eager: true, onDelete: 'SET NULL' })
     @JoinColumn({ name: 'id_usuario' })
     usuario: Usuario;
 
-    @ManyToOne(() => Plan, (plan) => plan.suscripciones, { eager: true })
+    @ManyToOne(() => Plan, (plan) => plan.suscripciones, { eager: true, onDelete: 'SET NULL' })
     @JoinColumn({ name: 'id_plan' })
     plan: Plan;
 
