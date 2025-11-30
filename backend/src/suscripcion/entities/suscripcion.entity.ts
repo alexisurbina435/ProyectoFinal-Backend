@@ -1,5 +1,5 @@
-import { Plan } from 'src/plan/entities/plan.entity';
-import { Usuario } from 'src/usuario/entities/usuario.entity';
+import { Plan } from '../../plan/entities/plan.entity';
+import { Usuario } from '../../usuario/entities/usuario.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, JoinColumn, } from 'typeorm';
 
 

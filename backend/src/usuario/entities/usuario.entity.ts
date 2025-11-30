@@ -7,12 +7,12 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Rutina } from 'src/rutina/entities/rutina.entity';
-import { Venta } from 'src/venta/entities/venta.entity';
-import { Blog } from 'src/blog/entities/blog.entity';
-import { FichaSalud } from 'src/ficha-salud/entities/ficha-salud.entity';
-import { Suscripcion } from 'src/suscripcion/entities/suscripcion.entity';
-import { Carrito } from 'src/carrito/entities/carrito.entity';
+import { Rutina } from '../../rutina/entities/rutina.entity';
+import { Venta } from '../../venta/entities/venta.entity';
+import { Blog } from '../../blog/entities/blog.entity';
+import { FichaSalud } from '../../ficha-salud/entities/ficha-salud.entity';
+import { Suscripcion } from '../../suscripcion/entities/suscripcion.entity';
+import { Carrito } from '../../carrito/entities/carrito.entity';
 
 export enum Rol {
   USUARIO = 'usuario',
