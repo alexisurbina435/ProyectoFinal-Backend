@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -25,7 +26,7 @@ export class UsuarioService {
     // private readonly configService: ConfigService,
     // @InjectRepository(Plan)
     // private readonly planRepo: Repository<Plan>,
-    
+
   ) { }
   // testeo 
   async findOne(email: string): Promise<Usuario> {
@@ -61,6 +62,15 @@ export class UsuarioService {
 
   async postUsuario(CreateUsuarioDto: CreateUsuarioDto): Promise<Usuario> {
     try {
+
+      const emailExiste = await this.usuarioRepository.findOne({
+        where: { email: CreateUsuarioDto.email },
+      });
+
+      if (emailExiste) {
+        throw new ConflictException('El email ya está registrado');
+      }
+
       const hashedPassword = await bcrypt.hash(CreateUsuarioDto.password, 10);
       const newUsuario = this.usuarioRepository.create({
         ...CreateUsuarioDto,
@@ -71,8 +81,12 @@ export class UsuarioService {
       const usuario = await this.usuarioRepository.save(newUsuario);
       return usuario;
     } catch (ex) {
-      throw new InternalServerErrorException(ex.message);
+      if (ex instanceof ConflictException) {
+        throw ex;
+      }
+      throw new BadRequestException(ex.message);
     }
+
   }
 
   async putUsuario(
