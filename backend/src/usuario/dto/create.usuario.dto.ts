@@ -16,7 +16,7 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { FichaSalud } from 'src/ficha-salud/entities/ficha-salud.entity';
+import { FichaSalud } from '../../ficha-salud/entities/ficha-salud.entity';
 
 export class CreateUsuarioDto {
 
