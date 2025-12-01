@@ -9,11 +9,11 @@ import { Rutina, TipoRutina } from './entities/rutina.entity';
 import { Repository, DataSource } from 'typeorm';
 import { CreateRutinaDto, UpdateRutinaDto } from './dto';
 import { CreateRutinaCompletaDto } from './dto/create-rutina-completa.dto';
-import { Usuario } from 'src/usuario/entities/usuario.entity';
-import { Semana } from 'src/semana/entities/semana.entity';
-import { Dia } from 'src/dia/entities/dia.entity';
-import { Dificultad } from 'src/dificultad/entities/dificultad.entity';
-import { Ejercicio } from 'src/ejercicio/entities/ejercicio.entity';
+import { Usuario } from '../usuario/entities/usuario.entity';
+import { Semana } from '../semana/entities/semana.entity';
+import { Dia } from '../dia/entities/dia.entity';
+import { Dificultad } from '../dificultad/entities/dificultad.entity';
+import { Ejercicio } from '../ejercicio/entities/ejercicio.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

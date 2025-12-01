@@ -3,8 +3,8 @@ import { ContactoService } from './contacto.service';
 import { CreateContactoDto } from './dto/create-contacto.dto';
 import { UpdateContactoDto } from './dto/update-contacto.dto';
 import { Contacto } from './entities/contacto.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { UsuarioService } from 'src/usuario/usuario.service';
+import { AuthGuard } from '../auth/auth.guard';
+import { UsuarioService } from '../usuario/usuario.service';
 
 @Controller('contacto')
 export class ContactoController {

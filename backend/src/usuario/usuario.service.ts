@@ -13,7 +13,7 @@ import { UpdateUsuarioDto } from './dto/update.usuario.dto';
 import * as bcrypt from 'bcrypt';
 // import { JwtService } from '@nestjs/jwt';
 // import { ConfigService } from '@nestjs/config';
-// import { Plan } from 'src/plan/entities/plan.entity';
+// import { Plan } from '../plan/entities/plan.entity';
 
 
 

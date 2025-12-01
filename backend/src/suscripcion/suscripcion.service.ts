@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { MercadoPagoService } from 'src/mercadopago/mercadopago.service';
+import { MercadoPagoService } from '../mercadopago/mercadopago.service';
 import { CreateSuscripcionDto } from './dto/create-suscripcion.dto';
 import { Suscripcion } from './entities/suscripcion.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Usuario } from 'src/usuario/entities/usuario.entity';
-import { Plan } from 'src/plan/entities/plan.entity';
+import { Usuario } from '../usuario/entities/usuario.entity';
+import { Plan } from '../plan/entities/plan.entity';
 
 @Injectable()
 export class SuscripcionService {

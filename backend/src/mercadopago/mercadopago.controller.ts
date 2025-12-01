@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { MercadoPagoService } from './mercadopago.service';
-import { SuscripcionService } from 'src/suscripcion/suscripcion.service';
+import { SuscripcionService } from '../suscripcion/suscripcion.service';
 
 @Controller('mercadopago')
 export class MercadoPagoController {
