@@ -9,8 +9,8 @@ async function bootstrap() {
   
   // const cors = require('cors');
   // app.use(cors());
-  app.setGlobalPrefix('api');
-  app.use(cookieParser());
+  // app.setGlobalPrefix('api');
+  // app.use(cookieParser());
 //   app.enableCors({
 //   origin:  'http://localhost:5173',
 //   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
@@ -18,7 +18,7 @@ async function bootstrap() {
 // });
 app.enableCors({
   origin: ['https://proyectofinal-backend-7797.onrender.com',  /// direccion que te provee la pagina render
-            'http://localhost:5173'],
+            'http://localhost:3000'],
            METHODS: 'GET,HEAD,PUT,PATCH,POST,DELETE',
           credentials: true,
  });
