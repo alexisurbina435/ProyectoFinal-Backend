@@ -7,7 +7,7 @@ export class MercadoPagoService {
     private readonly preapproval;
 
     constructor() {
-        const token = process.env.MP_ACCESS_TOKEN;
+        const token = "APP_USR-2517069472491497-112503-e6e765818273f3d3307caccd321e2d46-3013802627" //"process.env.MP_ACCESS_TOKEN";
         if (!token) {
             throw new Error(
                 'Environment variable MP_ACCESS_TOKEN is required for Mercado Pago configuration'
