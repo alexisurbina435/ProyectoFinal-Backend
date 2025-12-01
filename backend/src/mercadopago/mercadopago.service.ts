@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MercadoPagoConfig, PreApproval, Preference } from 'mercadopago';
-
 @Injectable()
 export class MercadoPagoService {
     private readonly preference;
     private readonly preapproval;
-
-    constructor() {
-        const token = "APP_USR-2517069472491497-112503-e6e765818273f3d3307caccd321e2d46-3013802627" //"process.env.MP_ACCESS_TOKEN";
+    constructor(private readonly configService: ConfigService) {
+        const accessToken = this.configService.get<string>('MP_ACCESS_TOKEN');
+        const token = accessToken;
         if (!token) {
             throw new Error(
                 'Environment variable MP_ACCESS_TOKEN is required for Mercado Pago configuration'
             );
         }
 
-        // Configuramos el cliente con el token del vendedor (collector)
         const client = new MercadoPagoConfig({
             accessToken: token,
         });
