@@ -17,7 +17,8 @@ async function bootstrap() {
 //   credentials: true, 
 // });
 app.enableCors({
-  origin: ['https://gymsuperarse.web.app',
+  origin: [
+    // 'https://gymsuperarse.web.app',
           'gymsuperarse.firebaseapp.com',  /// direccion que te provee la pagina render
             'http://localhost:5173'],
            METHODS: 'GET,HEAD,PUT,PATCH,POST,DELETE',
