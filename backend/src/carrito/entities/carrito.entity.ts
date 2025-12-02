@@ -7,7 +7,7 @@ export class Carrito {
   @PrimaryGeneratedColumn()
   id_carrito: number;
 
-  @OneToOne(() => Usuario, usuario => usuario.carrito)
+  @OneToOne(() => Usuario, usuario => usuario.carrito, { onDelete: 'CASCADE' })
   @JoinColumn({ name: "usuario_id" })
   usuario: Usuario;
 
