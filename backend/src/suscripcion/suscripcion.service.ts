@@ -57,15 +57,18 @@ export class SuscripcionService {
         console.error('Error en mpService.crearSuscripcion:', e);
         throw new InternalServerErrorException('Error al crear suscripción en MercadoPago');
       }
+      const fechaInicio = new Date();
+      const fechaFin = new Date();
+      fechaFin.setMonth(fechaFin.getMonth() + dto.mesesContratados);
 
       // 5. Crear objeto Suscripcion
       const suscripcion = this.suscripcionRepository.create({
         usuario,
         plan,
-        fechaInicio: null,
-        fechaFin: null,
+        fechaInicio,
+        fechaFin,
         mesesContratados: dto.mesesContratados,
-        montoPagado: 0,
+        montoPagado: 1,
         estado: 'Pendiente',
         preapprovalId: mp.id,
       });
