@@ -68,7 +68,7 @@ export class MercadoPagoService {
                     end_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString()
 
                 },
-                back_url: 'https://gymsuperarse.web.app/productos',
+                back_url: 'https://gymsuperarse.web.app/planillaSalud',
                 payer_email: email,
             };
 

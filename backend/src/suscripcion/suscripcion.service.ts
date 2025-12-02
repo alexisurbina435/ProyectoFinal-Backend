@@ -209,5 +209,19 @@ export class SuscripcionService {
     };
   }
 
+  async borrarSuscripcion(id: number) {
+  try {
+    const result = await this.suscripcionRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException('Suscripción no encontrada');
+    }
+    return { message: 'Suscripción eliminada correctamente' };
+  } catch (error) {
+    console.error('Error al borrar suscripción:', error);
+    throw new InternalServerErrorException('No se pudo borrar la suscripción');
+  }
+}
+
+
 
 }

@@ -27,6 +27,12 @@ async crear(@Body() dto: CreateSuscripcionDto) {
   async cancelar(@Param('id') preapprovalId: string) {
     return this.service.cancelar(preapprovalId);
   }
+
+  @Delete('borrar/:id')
+async borrar(@Param('id') id: number) {
+  return this.service.borrarSuscripcion(id);
+}
+
 }
 
 
