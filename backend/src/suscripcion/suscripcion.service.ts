@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { MercadoPagoService } from '../mercadopago/mercadopago.service';
 import { CreateSuscripcionDto } from './dto/create-suscripcion.dto';
 import { Suscripcion } from './entities/suscripcion.entity';
@@ -20,33 +20,75 @@ export class SuscripcionService {
   ) { }
 
   async crear(dto: CreateSuscripcionDto) {
-  try {
-    const usuario = await this.usuarioRepo.findOne({ where: { id_usuario: dto.id_usuario } });
-    if (!usuario) throw new NotFoundException('Usuario no encontrado');
+    console.log('DTO recibido en crear():', dto);
 
-    const plan = await this.planRepo.findOne({ where: { id_plan: dto.id_plan } });
-    if (!plan) throw new NotFoundException('Plan no encontrado');
+    try {
+      // 1. Buscar usuario
+      console.log('Buscando usuario con ID:', dto.id_usuario);
+      const usuario = await this.usuarioRepo.findOne({ where: { id_usuario: dto.id_usuario } });
+      if (!usuario) {
+        console.error('Usuario no encontrado');
+        throw new NotFoundException('Usuario no encontrado');
+      }
+      console.log('Usuario encontrado:', usuario);
 
-    const mp = await this.mpService.crearSuscripcion(usuario.email, plan.precio, plan.nombre);
+      // 2. Buscar plan
+      console.log('Buscando plan con ID:', dto.id_plan);
+      const plan = await this.planRepo.findOne({ where: { id_plan: dto.id_plan } });
+      if (!plan) {
+        console.error('Plan no encontrado');
+        throw new NotFoundException('Plan no encontrado');
+      }
+      console.log('Plan encontrado:', plan);
 
-    const suscripcion = this.suscripcionRepository.create({
-      usuario,
-      plan,
-      fechaInicio: null,
-      fechaFin: null,
-      mesesContratados: dto.mesesContratados,
-      montoPagado: 1,
-      estado: 'Pendiente',
-      preapprovalId: mp.id,
-    });
+      // 3. Validar meses contratados
+      if (!dto.mesesContratados || dto.mesesContratados <= 0) {
+        console.error('Meses contratados inválido:', dto.mesesContratados);
+        throw new BadRequestException('Debes indicar meses contratados mayor a 0');
+      }
+      console.log('Meses contratados:', dto.mesesContratados);
 
-    await this.suscripcionRepository.save(suscripcion);
-    return mp;
-  } catch (error) {
-    console.error('Error al crear suscripción:', error);
-    throw new InternalServerErrorException('No se pudo crear la suscripción');
+      // 4. Crear suscripción en MercadoPago
+      let mp;
+      try {
+        mp = await this.mpService.crearSuscripcion(usuario.email, plan.precio, plan.nombre);
+        console.log('Respuesta de MercadoPago:', mp);
+      } catch (e) {
+        console.error('Error en mpService.crearSuscripcion:', e);
+        throw new InternalServerErrorException('Error al crear suscripción en MercadoPago');
+      }
+
+      // 5. Crear objeto Suscripcion
+      const suscripcion = this.suscripcionRepository.create({
+        usuario,
+        plan,
+        fechaInicio: null,
+        fechaFin: null,
+        mesesContratados: dto.mesesContratados,
+        montoPagado: 0,
+        estado: 'Pendiente',
+        preapprovalId: mp.id,
+      });
+      console.log('Suscripción a guardar:', suscripcion);
+
+      // 6. Guardar en DB
+      try {
+        await this.suscripcionRepository.save(suscripcion);
+        console.log('Suscripción guardada correctamente');
+      } catch (e) {
+        console.error('Error al guardar suscripción en DB:', e);
+        throw new InternalServerErrorException('Error al guardar suscripción en base de datos');
+      }
+
+      // 7. Devolver respuesta
+      return mp;
+
+    } catch (error) {
+      console.error('Error general en crear():', error);
+      throw new InternalServerErrorException('No se pudo crear la suscripción');
+    }
   }
-}
+
 
 
   async procesarWebhook(preapprovalId: string, status: string) {
