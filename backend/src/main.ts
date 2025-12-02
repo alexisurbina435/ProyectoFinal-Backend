@@ -22,6 +22,7 @@ app.enableCors({
             'http://localhost:5173'],
            METHODS: 'GET,HEAD,PUT,PATCH,POST,DELETE',
           credentials: true,
+          allowedHeaders: ['Content-Type', 'Authorization'],
  });
 
   // Validamos y transformamos los DTO para que respeten los tipos declarados
