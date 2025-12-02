@@ -1,6 +1,7 @@
-import { Body, Controller, HttpCode, Post, Headers, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { MercadoPagoService } from './mercadopago.service';
 import { SuscripcionService } from '../suscripcion/suscripcion.service';
+
 @Controller('mercadopago')
 export class MercadoPagoController {
   constructor(private readonly mpService: MercadoPagoService,
@@ -11,22 +12,22 @@ export class MercadoPagoController {
   async crearPreferencia() {
     return this.mpService.crearPreferencia();
   }
-
+ 
   // esto lo usa mercadopago cuando tengamos el dominio de la pag 
-@Post('webhook')
-@HttpCode(200)
-async webhook(@Body() body: any, @Headers('x-webhook-secret') secret: string) {
-  if (secret !== process.env.WEBHOOK_SECRET) {
-    throw new UnauthorizedException('Webhook no autorizado');
+  @Post('webhook')
+  @HttpCode(200)
+  async webhook(@Body() body: any) {
+    console.log('Webhook recibido:', body);
+
+    if (body.type === 'preapproval') {
+      const preapprovalId = body.data.id;
+      const status = body.data.status; //authorized, cancelled, etc.
+
+      // Actualizamos la suscripción y el estado_pago del usuario
+      await this.suscripcionService.actualizarEstado(preapprovalId, status);
+    }
+
+    return { received: true };
   }
-  console.log("Webhook recibido:", body);
-  if (body.type === 'preapproval') {
-    await this.suscripcionService.procesarWebhook(body.data.id, body.data.status);
-  }
-  return { received: true };
 }
 
-
-
-
-}

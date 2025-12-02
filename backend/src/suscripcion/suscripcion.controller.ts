@@ -7,11 +7,9 @@ export class SuscripcionController {
   constructor(private readonly service: SuscripcionService) { }
 
   @Post()
-async crear(@Body() dto: CreateSuscripcionDto) {
-  console.log('DTO recibido:', dto);
-  return this.service.crear(dto);
-}
-
+  async crear(@Body() dto: CreateSuscripcionDto) {
+    return this.service.crear(dto);
+  }
 
   @Put(':id_usuario/plan/:id_plan')
   async cambiarPlan(
@@ -27,12 +25,5 @@ async crear(@Body() dto: CreateSuscripcionDto) {
   async cancelar(@Param('id') preapprovalId: string) {
     return this.service.cancelar(preapprovalId);
   }
-
-  @Delete('borrar/:id')
-async borrar(@Param('id') id: number) {
-  return this.service.borrarSuscripcion(id);
 }
-
-}
-
 
