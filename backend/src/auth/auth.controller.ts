@@ -13,8 +13,8 @@ export class AuthController {
     const { usuario, access_token } = await this.authService.login(createUsuarioDto.email, createUsuarioDto.password);
     response.cookie('token', access_token, {
       httpOnly: true,
-      secure: false, // solo por HTTPS
-      sameSite: 'strict',
+      secure: true, // solo por HTTPS
+      sameSite: 'none',
       maxAge: 3600 * 1000, // 1 hora
     });
     return { message: 'Login exitoso', usuario };
