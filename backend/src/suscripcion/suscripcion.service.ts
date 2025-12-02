@@ -46,7 +46,7 @@ export class SuscripcionService {
     await this.suscripcionRepository.save(suscripcion);
 
     //Marcamos estado_pago = true inmediatamente
-    usuario.estado_pago = true;//esto en verdad se usa el webhook que esta en mercadopagoController, pero ahora no funciona por que no tenemos dominio
+    //usuario.estado_pago = true;//esto en verdad se usa el webhook que esta en mercadopagoController, pero ahora no funciona por que no tenemos dominio
     await this.usuarioRepo.save(usuario);
 
     return mp; // Devuelve init_point y id para pagar
