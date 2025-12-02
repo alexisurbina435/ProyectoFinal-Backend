@@ -28,29 +28,51 @@ export class SuscripcionService {
 
     const mp = await this.mpService.crearSuscripcion(usuario.email, plan.precio, plan.nombre);
 
-    const fechaInicio = new Date();
-    const fechaFin = new Date();
-    fechaFin.setMonth(fechaFin.getMonth() + dto.mesesContratados);
-
     const suscripcion = this.suscripcionRepository.create({
-      usuario,
-      plan,
-      fechaInicio,
-      fechaFin,
+      usuario: usuario,   // objeto completo
+      plan,      // objeto completo
+      fechaInicio: null,
+      fechaFin: null,
       mesesContratados: dto.mesesContratados,
-      montoPagado: plan.precio * dto.mesesContratados,
-      estado: 'Activa',
+      montoPagado: 0,
+      estado: 'Pendiente',
       preapprovalId: mp.id,
     });
 
     await this.suscripcionRepository.save(suscripcion);
 
-    //Marcamos estado_pago = true inmediatamente
-    //usuario.estado_pago = true;//esto en verdad se usa el webhook que esta en mercadopagoController, pero ahora no funciona por que no tenemos dominio
-    await this.usuarioRepo.save(usuario);
+    // ⚠️ No hace falta guardar usuario acá, porque no lo modificaste
+    // await this.usuarioRepo.save(usuario);
 
-    return mp; // Devuelve init_point y id para pagar
+    return mp;
+
   }
+
+  async procesarWebhook(preapprovalId: string, status: string) {
+    const suscripcion = await this.suscripcionRepository.findOne({ where: { preapprovalId }, relations: ['usuario', 'plan'] });
+    if (!suscripcion) return;
+
+    if (status === 'authorized') {
+      suscripcion.estado = 'Activa';
+      suscripcion.fechaInicio = new Date();
+      suscripcion.fechaFin = new Date();
+      suscripcion.fechaFin.setMonth(suscripcion.fechaInicio.getMonth() + suscripcion.mesesContratados);
+      suscripcion.montoPagado = suscripcion.plan.precio * suscripcion.mesesContratados;
+      await this.suscripcionRepository.save(suscripcion);
+
+      suscripcion.usuario.estado_pago = true;
+      await this.usuarioRepo.save(suscripcion.usuario);
+    }
+
+    if (status === 'cancelled') {
+      suscripcion.estado = 'Cancelada';
+      await this.suscripcionRepository.save(suscripcion);
+
+      suscripcion.usuario.estado_pago = false;
+      await this.usuarioRepo.save(suscripcion.usuario);
+    }
+  }
+
 
   async cancelar(preapprovalId: string) {
     await this.mpService.cancelarSuscripcion(preapprovalId);
@@ -90,11 +112,11 @@ export class SuscripcionService {
   }
 
   async cambiarPlan(id_usuario: number, id_plan_nuevo: number, mesesContratados: number) {
-    
+
     const usuario = await this.usuarioRepo.findOne({ where: { id_usuario } });
     if (!usuario) throw new NotFoundException('Usuario no encontrado');
 
-    
+
     const suscripcionActual = await this.suscripcionRepository.findOne({
       where: { usuario: { id_usuario }, estado: 'Activa' },
       relations: ['plan', 'usuario'],

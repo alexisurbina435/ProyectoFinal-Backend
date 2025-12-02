@@ -16,11 +16,12 @@ export class Suscripcion {
     @JoinColumn({ name: 'id_plan' })
     plan: Plan;
 
-    @CreateDateColumn()
-    fechaInicio: Date;
+    @CreateDateColumn({ type: 'timestamp', nullable: true })
+    fechaInicio: Date | null;
 
-    @Column({ type: 'date' })
-    fechaFin: Date;
+    @Column({ type: 'timestamp', nullable: true })
+    fechaFin: Date | null;
+
 
     @Column({ type: 'int', default: 1 })
     mesesContratados: number;
