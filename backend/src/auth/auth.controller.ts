@@ -16,6 +16,7 @@ export class AuthController {
       secure: true, // solo por HTTPS
       sameSite: 'none',
       maxAge: 5 * 60 * 60 * 1000, // 5 horas
+      path:'/' 
     });
     return { message: 'Login exitoso', usuario };
   }
@@ -25,8 +26,10 @@ export class AuthController {
   async logout(@Res({ passthrough: true }) response: Response) {
     response.clearCookie('token',{
       httpOnly: true,
-        secure: true, // solo por HTTPS
-        sameSite: 'none',  
+      secure: true, // solo por HTTPS
+      sameSite: 'none',
+      maxAge: 5 * 60 * 60 * 1000, // 5 horas
+      path:'/' 
     });
     return { message: 'Logout exitoso' };
   }
