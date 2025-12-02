@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { MercadoPagoService } from '../mercadopago/mercadopago.service';
 import { CreateSuscripcionDto } from './dto/create-suscripcion.dto';
 import { Suscripcion } from './entities/suscripcion.entity';
@@ -20,6 +20,7 @@ export class SuscripcionService {
   ) { }
 
   async crear(dto: CreateSuscripcionDto) {
+  try {
     const usuario = await this.usuarioRepo.findOne({ where: { id_usuario: dto.id_usuario } });
     if (!usuario) throw new NotFoundException('Usuario no encontrado');
 
@@ -29,8 +30,8 @@ export class SuscripcionService {
     const mp = await this.mpService.crearSuscripcion(usuario.email, plan.precio, plan.nombre);
 
     const suscripcion = this.suscripcionRepository.create({
-      usuario: usuario,   // objeto completo
-      plan,      // objeto completo
+      usuario,
+      plan,
       fechaInicio: null,
       fechaFin: null,
       mesesContratados: dto.mesesContratados,
@@ -40,13 +41,13 @@ export class SuscripcionService {
     });
 
     await this.suscripcionRepository.save(suscripcion);
-
-    // ⚠️ No hace falta guardar usuario acá, porque no lo modificaste
-    // await this.usuarioRepo.save(usuario);
-
     return mp;
-
+  } catch (error) {
+    console.error('Error al crear suscripción:', error);
+    throw new InternalServerErrorException('No se pudo crear la suscripción');
   }
+}
+
 
   async procesarWebhook(preapprovalId: string, status: string) {
     const suscripcion = await this.suscripcionRepository.findOne({ where: { preapprovalId }, relations: ['usuario', 'plan'] });
