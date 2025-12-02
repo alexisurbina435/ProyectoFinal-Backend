@@ -13,19 +13,19 @@ export class MercadoPagoController {
   }
 
   // esto lo usa mercadopago cuando tengamos el dominio de la pag 
-  @Post('webhook')
+@Post('webhook')
 @HttpCode(200)
 async webhook(@Body() body: any, @Headers('x-webhook-secret') secret: string) {
   if (secret !== process.env.WEBHOOK_SECRET) {
     throw new UnauthorizedException('Webhook no autorizado');
   }
-
+  console.log("Webhook recibido:", body);
   if (body.type === 'preapproval') {
     await this.suscripcionService.procesarWebhook(body.data.id, body.data.status);
   }
-
   return { received: true };
 }
+
 
 
 

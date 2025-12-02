@@ -95,29 +95,51 @@ export class SuscripcionService {
 
 
   async procesarWebhook(preapprovalId: string, status: string) {
-    const suscripcion = await this.suscripcionRepository.findOne({ where: { preapprovalId }, relations: ['usuario', 'plan'] });
+    const suscripcion = await this.suscripcionRepository.findOne({
+      where: { preapprovalId },
+      relations: ['usuario', 'plan'],
+    });
     if (!suscripcion) return;
 
-    if (status === 'authorized') {
-      suscripcion.estado = 'Activa';
-      suscripcion.fechaInicio = new Date();
-      suscripcion.fechaFin = new Date();
-      suscripcion.fechaFin.setMonth(suscripcion.fechaInicio.getMonth() + suscripcion.mesesContratados);
-      suscripcion.montoPagado = suscripcion.plan.precio * suscripcion.mesesContratados;
-      await this.suscripcionRepository.save(suscripcion);
+    switch (status) {
+      case 'pending':
+        // MercadoPago todavía no autorizó el pago
+        suscripcion.estado = 'Pendiente';
+        suscripcion.usuario.estado_pago = false;
+        break;
 
-      suscripcion.usuario.estado_pago = true;
-      await this.usuarioRepo.save(suscripcion.usuario);
+      case 'authorized':
+      case 'approved': // algunos entornos devuelven "approved"
+        suscripcion.estado = 'Activa';
+        suscripcion.fechaInicio = new Date();
+        suscripcion.fechaFin = new Date();
+        suscripcion.fechaFin.setMonth(
+          suscripcion.fechaInicio.getMonth() + suscripcion.mesesContratados
+        );
+        suscripcion.montoPagado =
+          suscripcion.plan.precio * suscripcion.mesesContratados;
+        suscripcion.usuario.estado_pago = true;
+        break;
+
+      case 'paused':
+        suscripcion.estado = 'Pausada';
+        suscripcion.usuario.estado_pago = false;
+        break;
+
+      case 'cancelled':
+        suscripcion.estado = 'Cancelada';
+        suscripcion.usuario.estado_pago = false;
+        break;
+
+      default:
+        console.log('Estado no contemplado:', status);
+        break;
     }
 
-    if (status === 'cancelled') {
-      suscripcion.estado = 'Cancelada';
-      await this.suscripcionRepository.save(suscripcion);
-
-      suscripcion.usuario.estado_pago = false;
-      await this.usuarioRepo.save(suscripcion.usuario);
-    }
+    await this.suscripcionRepository.save(suscripcion);
+    await this.usuarioRepo.save(suscripcion.usuario);
   }
+
 
 
   async cancelar(preapprovalId: string) {
