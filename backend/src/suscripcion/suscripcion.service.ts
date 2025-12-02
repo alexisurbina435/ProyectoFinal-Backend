@@ -35,7 +35,7 @@ export class SuscripcionService {
       fechaInicio: null,
       fechaFin: null,
       mesesContratados: dto.mesesContratados,
-      montoPagado: 0,
+      montoPagado: 1,
       estado: 'Pendiente',
       preapprovalId: mp.id,
     });
