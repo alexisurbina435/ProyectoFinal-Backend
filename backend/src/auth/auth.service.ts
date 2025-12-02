@@ -18,16 +18,18 @@ export class AuthService {
 
   async login(email: string, passwordd: string): Promise<Usuario | any> {
       const usuario = await this.usuarioRepository.findOne({ where: { email } });
+      console.log('Usuario encontrado:', usuario);
       if (!usuario) {
         throw new BadRequestException('El usuario no existe');
       }
       const passwordValida = await bcrypt.compare(passwordd, usuario.password);
+      console.log('Password válida:', passwordValida);
       if (!passwordValida) {
         throw new BadRequestException('La contraseña es incorrecta');
       }
       // quito la contraseña al logear 
       const { password: _, ...publicUser } = usuario;
-  
+      console.log('Usuario público:', publicUser);
       const payload = {
         id_usuario: usuario.id_usuario,
         nombre: usuario.nombre,
