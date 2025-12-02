@@ -23,7 +23,11 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Res({ passthrough: true }) response: Response) {
-    response.clearCookie('token');
+    response.clearCookie('token',{
+      httpOnly: true,
+        secure: true, // solo por HTTPS
+        sameSite: 'none',  
+    });
     return { message: 'Logout exitoso' };
   }
 }
