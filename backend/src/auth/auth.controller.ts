@@ -15,7 +15,7 @@ export class AuthController {
       httpOnly: true,
       secure: true, // solo por HTTPS
       sameSite: 'none',
-      maxAge: 3600 * 1000, // 1 hora
+      maxAge: 5 * 60 * 60 * 1000, // 5 horas
     });
     return { message: 'Login exitoso', usuario };
   }
