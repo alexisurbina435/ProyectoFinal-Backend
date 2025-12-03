@@ -16,23 +16,19 @@ export class MercadoPagoController {
   // esto lo usa mercadopago cuando tengamos el dominio de la pag 
   @Post('webhook')
   @HttpCode(200)
-
   async webhook(@Body() body: any) {
     console.log('Webhook recibido:', JSON.stringify(body, null, 2));
-
-    const type = body.type || body.topic;
-    const preapprovalId = body.data?.id;
-
-    if (type === 'preapproval' || type === 'subscription_preapproval') {
-
-
-      const detalle = await this.mpService.obtenerPreapproval(preapprovalId);
-      const status = detalle.status;
-
-      console.log("Estado real:", status);
-
-      await this.suscripcionService.actualizarEstado(preapprovalId, status);
-    }   
+    // Aquí responde 200 siempre, incluso si algo falla adentro
+    setImmediate(async () => {
+      const type = body.type || body.topic;
+      const preapprovalId = body.data?.id;
+      if (type === 'preapproval' || type === 'subscription_preapproval') {
+        const detalle = await this.mpService.obtenerPreapproval(preapprovalId);
+        const status = detalle.status;
+        await this.suscripcionService.actualizarEstado(preapprovalId, status);
+      }
+    });
+    return { received: true };
   }
-  }
+}
 
