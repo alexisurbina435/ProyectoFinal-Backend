@@ -58,48 +58,35 @@ export class SuscripcionService {
 
    async actualizarEstado(preapprovalId: string, estado: string) {
 
-  const suscripcion = await this.suscripcionRepository.findOne({
-    where: { preapprovalId },
-    relations: ['usuario'],
-  });
+    const suscripcion = await this.suscripcionRepository.findOne({
+      where: { preapprovalId },
+      relations: ['usuario'],
+    });
 
-  if (!suscripcion) {
-    console.log('No se encontró la suscripción con preapprovalId:', preapprovalId);
-    return;
+
+    if (!suscripcion) {
+      console.log('No se encontró la suscripción con preapprovalId:', preapprovalId);
+      return;
+    }
+
+    suscripcion.estado = estado.toUpperCase();
+    await this.suscripcionRepository.save(suscripcion);
+
+
+    const estadoActivo = ['authorized', 'approved', 'active'];
+    if (estadoActivo.includes(estado)) {
+      suscripcion.usuario.estado_pago = true;
+      await this.usuarioRepo.save(suscripcion.usuario);
+    }
+
+    console.log('Suscripcion encontrada:', suscripcion);
+    console.log('Usuario relacionado:', suscripcion?.usuario);
+    console.log('Estado recibido:', estado);
+    if (estado === 'cancelled') {
+      suscripcion.usuario.estado_pago = false;
+      await this.usuarioRepo.save(suscripcion.usuario);
+    }
   }
-
-  const mapEstados = {
-    authorized: 'ACTIVA',
-    approved: 'ACTIVA',
-    active: 'ACTIVA',
-    pending: 'PENDIENTE',
-    cancelled: 'CANCELADA',
-    paused: 'PAUSADA',
-    expired: 'EXPIRADA'
-  };
-
-  //Convertimos el estado recibido de Mercado Pago a español
-  const estadoConvertido = mapEstados[estado.toLowerCase()] || 'DESCONOCIDO';
-
-  //Guardamos el estado en la suscripción
-  suscripcion.estado = estadoConvertido;
-  await this.suscripcionRepository.save(suscripcion);
-
-  //Actualizamos el estado de pago del usuario según el estado de la suscripción
-  if (['ACTIVA'].includes(estadoConvertido)) {
-    suscripcion.usuario.estado_pago = true;
-  } else if (['CANCELADA', 'EXPIRADA'].includes(estadoConvertido)) {
-    suscripcion.usuario.estado_pago = false;
-  }
-
-  await this.usuarioRepo.save(suscripcion.usuario);
-
-  // Logs para depuración
-  console.log('Suscripción encontrada:', suscripcion);
-  console.log('Usuario relacionado:', suscripcion.usuario);
-  console.log('Estado recibido de MP:', estado);
-  console.log('Estado convertido a español:', estadoConvertido);
-}
 
 
 
