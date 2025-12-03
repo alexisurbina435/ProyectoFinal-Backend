@@ -56,7 +56,7 @@ export class SuscripcionService {
     await this.suscripcionRepository.update({ preapprovalId }, { estado: 'CANCELADA' });
   }
 
-   async actualizarEstado(preapprovalId: string, estado: string) {
+  async actualizarEstado(preapprovalId: string, estado: string) {
 
     const suscripcion = await this.suscripcionRepository.findOne({
       where: { preapprovalId },
@@ -72,11 +72,20 @@ export class SuscripcionService {
     suscripcion.estado = estado.toUpperCase();
 
     await this.suscripcionRepository.save(suscripcion);
-    
+
     const estadoActivo = ['authorized', 'approved', 'active'];
     if (estadoActivo.includes(estado)) {
       suscripcion.usuario.estado_pago = true;
+      suscripcion.estado = 'ACTIVA';
       await this.usuarioRepo.save(suscripcion.usuario);
+      await this.suscripcionRepository.save(suscripcion);
+    }
+
+    if (estado === 'cancelled') {
+      suscripcion.usuario.estado_pago = false;
+      suscripcion.estado = 'CANCELADA';
+      await this.usuarioRepo.save(suscripcion.usuario);
+      await this.suscripcionRepository.save(suscripcion);
     }
 
     console.log('Suscripcion encontrada:', suscripcion);
