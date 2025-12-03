@@ -12,7 +12,7 @@ export class MercadoPagoController {
   async crearPreferencia() {
     return this.mpService.crearPreferencia();
   }
-
+ 
   // esto lo usa mercadopago cuando tengamos el dominio de la pag 
   @Post('webhook')
   @HttpCode(200)
@@ -21,13 +21,13 @@ export class MercadoPagoController {
 
     if (body.type === 'preapproval') {
       const preapprovalId = body.data.id;
-      const status = body.data.status;
+      const status = body.data.status; //authorized, cancelled, etc.
 
+      // Actualizamos la suscripción y el estado_pago del usuario
       await this.suscripcionService.actualizarEstado(preapprovalId, status);
     }
 
     return { received: true };
   }
-
 }
 
