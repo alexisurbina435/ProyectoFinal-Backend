@@ -1,7 +1,7 @@
-import { Body, Controller, HttpCode, Post, Headers } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Headers, Get, Query, Res, HttpStatus } from '@nestjs/common';
 import { MercadoPagoService } from './mercadopago.service';
 import { SuscripcionService } from '../suscripcion/suscripcion.service';
-
+import express from 'express';
 @Controller('mercadopago')
 export class MercadoPagoController {
   constructor(private readonly mpService: MercadoPagoService,
@@ -15,34 +15,42 @@ export class MercadoPagoController {
 
   // esto lo usa mercadopago cuando tengamos el dominio de la pag 
   @Post('webhook')
-  @HttpCode(200)
-  async webhook(@Body() body: any, @Headers() headers: any) {
-    console.log('Webhook recibido:', JSON.stringify(body, null, 2));
-    console.log('Headers:', JSON.stringify(headers, null, 2));
-    // Identificar el tipo de evento
-    const type = body.type || body.topic;
+    @Get('webhook')
+    async webhook(
+        @Query('topic') topic: string,
+        @Query('id') id: string, 
+        @Res() res: express.Response 
+    ) {
+     
+        res.sendStatus(HttpStatus.OK);
+        
+       
+        if (!topic || !id) {
+            console.error('Webhook: Falta topic o id. (Respuesta 200 ya enviada)');
+            return; 
+        }
 
-    // Obtener preapprovalId de forma segura
-    const preapprovalId = body.data?.id || body.id;
+        (async () => {
+            console.log(`Webhook recibido: Topic=${topic}, ID=${id}`);
 
-    if (!preapprovalId) {
-      console.log('No se pudo obtener preapprovalId del webhook');
-      return { ok: false, message: 'preapprovalId no encontrado' };
+            if (topic === 'preapproval' || topic === 'subscription_preapproval') {
+                try {
+                    const detalle = await this.mpService.obtenerPreapproval(id);
+                    const status = detalle.status;
+                    
+                    console.log("Estado real consultado:", status);
+
+                    // Actualizar estado en tu DB
+                    await this.suscripcionService.actualizarEstado(id, status);
+                } catch (err) {
+                    console.error('Error procesando preapproval (asíncrono):', err);
+                }
+            } 
+      
+        })();
+
+      
     }
-
-    if (type === 'preapproval' || type === 'subscription_preapproval') {
-      try {
-        const detalle = await this.mpService.obtenerPreapproval(preapprovalId);
-        const status = detalle.status;
-        console.log("Estado real:", status);
-
-        await this.suscripcionService.actualizarEstado(preapprovalId, status);
-      } catch (err) {
-        console.error('Error procesando preapproval:', err);
-      }
-    }
-
-    return { ok: true }; // Siempre devolver 200 a MercadoPago
-  }
 }
+
 
