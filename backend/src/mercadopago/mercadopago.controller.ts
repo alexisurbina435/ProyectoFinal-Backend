@@ -19,16 +19,9 @@ export class MercadoPagoController {
   async webhook(@Body() body: any) {
     console.log('Webhook recibido:', JSON.stringify(body, null, 2));
 
-    const type = body.type || body.topic;
-    const preapprovalId = body.data?.id;
-
-    if (type === 'preapproval' || type === 'subscription_preapproval') {
-
-      const detalle = await this.mpService.obtenerPreapproval(preapprovalId);
-      const status = detalle.status;
-
-      console.log("Estado real:", status);
-
+    if (body.type === 'preapproval' || body.type === 'subscription_preapproval') {
+      const preapprovalId = body.data.id;
+      const status = body.data.status;
       await this.suscripcionService.actualizarEstado(preapprovalId, status);
     }
 
