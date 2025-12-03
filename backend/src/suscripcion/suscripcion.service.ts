@@ -56,53 +56,36 @@ export class SuscripcionService {
     await this.suscripcionRepository.update({ preapprovalId }, { estado: 'CANCELADA' });
   }
 
-  async actualizarEstado(preapprovalId: string, estado: string) {
+   async actualizarEstado(preapprovalId: string, estado: string) {
+
     const suscripcion = await this.suscripcionRepository.findOne({
       where: { preapprovalId },
       relations: ['usuario'],
     });
+
 
     if (!suscripcion) {
       console.log('No se encontró la suscripción con preapprovalId:', preapprovalId);
       return;
     }
 
-    //Normalizamos el estado recibido
-    const estadoNormalizado = estado.toLowerCase();
+    suscripcion.estado = estado.toUpperCase();
+    await this.suscripcionRepository.save(suscripcion);
 
-    switch (estadoNormalizado) {
-      case 'authorized':
-      case 'approved':
-      case 'active':
-      case 'authorized_payment': //algunos eventos de MP llegan así
-        suscripcion.estado = 'ACTIVA';
-        suscripcion.usuario.estado_pago = true;
-        break;
 
-      case 'cancelled':
-      case 'expired':
-      case 'paused':
-        suscripcion.estado = 'CANCELADA';
-        suscripcion.usuario.estado_pago = false;
-        break;
-        
-      case 'pending':
-      case 'in_process':
-        suscripcion.estado = 'PENDIENTE';
-        suscripcion.usuario.estado_pago = false;
-        break;
-
-      default:
-
-        suscripcion.estado = estadoNormalizado.toUpperCase();
-        suscripcion.usuario.estado_pago = false;
-        break;
+    const estadoActivo = ['authorized', 'approved', 'active'];
+    if (estadoActivo.includes(estado)) {
+      suscripcion.usuario.estado_pago = true;
+      await this.usuarioRepo.save(suscripcion.usuario);
     }
 
-    await this.suscripcionRepository.save(suscripcion);
-    await this.usuarioRepo.save(suscripcion.usuario);
-
-    console.log('Suscripción actualizada:', suscripcion);
+    console.log('Suscripcion encontrada:', suscripcion);
+    console.log('Usuario relacionado:', suscripcion?.usuario);
+    console.log('Estado recibido:', estado);
+    if (estado === 'cancelled') {
+      suscripcion.usuario.estado_pago = false;
+      await this.usuarioRepo.save(suscripcion.usuario);
+    }
   }
 
 
