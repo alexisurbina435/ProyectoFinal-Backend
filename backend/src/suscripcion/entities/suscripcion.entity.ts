@@ -28,7 +28,7 @@ export class Suscripcion {
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     montoPagado: number;
 
-    @Column({ type: 'varchar', length: 20, default: 'ACTIVA' })
+    @Column({ type: 'varchar', length: 20, default: 'PENDIENTE' })
     estado: string;
 
     @Column()

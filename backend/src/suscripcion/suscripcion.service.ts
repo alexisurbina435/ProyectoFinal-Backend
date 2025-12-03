@@ -26,12 +26,14 @@ export class SuscripcionService {
     const plan = await this.planRepo.findOne({ where: { id_plan: dto.id_plan } });
     if (!plan) throw new NotFoundException('Plan no encontrado');
 
+    // Crear suscripción en MercadoPago
     const mp = await this.mpService.crearSuscripcion(usuario.email, plan.precio, plan.nombre);
 
     const fechaInicio = new Date();
     const fechaFin = new Date();
     fechaFin.setMonth(fechaFin.getMonth() + dto.mesesContratados);
 
+    // Guardamos la suscripción en estado "Pendiente"
     const suscripcion = this.suscripcionRepository.create({
       usuario,
       plan,
@@ -39,18 +41,15 @@ export class SuscripcionService {
       fechaFin,
       mesesContratados: dto.mesesContratados,
       montoPagado: plan.precio * dto.mesesContratados,
-      estado: 'Activa',
+      estado: 'PENDIENTE',
       preapprovalId: mp.id,
     });
 
     await this.suscripcionRepository.save(suscripcion);
 
-    //Marcamos estado_pago = true inmediatamente
-    usuario.estado_pago = true;//esto en verdad se usa el webhook que esta en mercadopagoController, pero ahora no funciona por que no tenemos dominio
-    await this.usuarioRepo.save(usuario);
-
     return mp; // Devuelve init_point y id para pagar
   }
+
 
   async cancelar(preapprovalId: string) {
     await this.mpService.cancelarSuscripcion(preapprovalId);
@@ -58,45 +57,64 @@ export class SuscripcionService {
   }
 
   async actualizarEstado(preapprovalId: string, estado: string) {
-
     const suscripcion = await this.suscripcionRepository.findOne({
       where: { preapprovalId },
       relations: ['usuario'],
     });
-
 
     if (!suscripcion) {
       console.log('No se encontró la suscripción con preapprovalId:', preapprovalId);
       return;
     }
 
-    suscripcion.estado = estado.toUpperCase();
+    //Normalizamos el estado recibido
+    const estadoNormalizado = estado.toLowerCase();
+
+    switch (estadoNormalizado) {
+      case 'authorized':
+      case 'approved':
+      case 'active':
+      case 'authorized_payment': //algunos eventos de MP llegan así
+        suscripcion.estado = 'ACTIVA';
+        suscripcion.usuario.estado_pago = true;
+        break;
+
+      case 'cancelled':
+      case 'expired':
+      case 'paused':
+        suscripcion.estado = 'CANCELADA';
+        suscripcion.usuario.estado_pago = false;
+        break;
+        
+      case 'pending':
+      case 'in_process':
+        suscripcion.estado = 'PENDIENTE';
+        suscripcion.usuario.estado_pago = false;
+        break;
+
+      default:
+
+        suscripcion.estado = estadoNormalizado.toUpperCase();
+        suscripcion.usuario.estado_pago = false;
+        break;
+    }
+
     await this.suscripcionRepository.save(suscripcion);
+    await this.usuarioRepo.save(suscripcion.usuario);
 
-
-    const estadoActivo = ['authorized', 'approved', 'active'];
-    if (estadoActivo.includes(estado)) {
-      suscripcion.usuario.estado_pago = true;
-      await this.usuarioRepo.save(suscripcion.usuario);
-    }
-
-    console.log('Suscripcion encontrada:', suscripcion);
-    console.log('Usuario relacionado:', suscripcion?.usuario);
-    console.log('Estado recibido:', estado);
-    if (estado === 'cancelled') {
-      suscripcion.usuario.estado_pago = false;
-      await this.usuarioRepo.save(suscripcion.usuario);
-    }
+    console.log('Suscripción actualizada:', suscripcion);
   }
 
+
+
   async cambiarPlan(id_usuario: number, id_plan_nuevo: number, mesesContratados: number) {
-    
+
     const usuario = await this.usuarioRepo.findOne({ where: { id_usuario } });
     if (!usuario) throw new NotFoundException('Usuario no encontrado');
 
-    
+
     const suscripcionActual = await this.suscripcionRepository.findOne({
-      where: { usuario: { id_usuario }, estado: 'Activa' },
+      where: { usuario: { id_usuario }, estado: 'ACTIVA' },
       relations: ['plan', 'usuario'],
     });
     if (!suscripcionActual) throw new NotFoundException('No se encontró suscripción activa');
@@ -125,7 +143,7 @@ export class SuscripcionService {
       fechaFin,
       mesesContratados,
       montoPagado: planNuevo.precio * mesesContratados,
-      estado: 'Activa',
+      estado: 'PENDIENTE',
       preapprovalId: mp.id,
     });
 
