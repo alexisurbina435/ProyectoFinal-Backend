@@ -52,6 +52,16 @@ export class MercadoPagoService {
         }
     }
 
+    async obtenerPreapproval(id: string) {
+    try {
+        const result = await this.preapproval.get({ id });
+        return result;
+    } catch (error) {
+        console.error("Error obteniendo preapproval:", error);
+        throw error;
+    }
+}
+
     // Crear suscripción (sandbox)
     async crearSuscripcion(email: string, monto: number, descripcion: string) {
         try {
