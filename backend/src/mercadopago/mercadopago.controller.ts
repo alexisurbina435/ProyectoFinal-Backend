@@ -19,10 +19,8 @@ export class MercadoPagoController {
   async webhook(@Body() body: any, @Headers() headers: any) {
     console.log('Webhook recibido:', JSON.stringify(body, null, 2));
     console.log('Headers:', JSON.stringify(headers, null, 2));
-    // Identificar el tipo de evento
-    const type = body.type || body.topic;
 
-    // Obtener preapprovalId de forma segura
+    const type = body.type || body.topic;
     const preapprovalId = body.data?.id || body.id;
 
     if (!preapprovalId) {
@@ -42,7 +40,8 @@ export class MercadoPagoController {
       }
     }
 
-    return { ok: true }; // Siempre devolver 200 a MercadoPago
+    return { ok: true };
   }
+
 }
 
