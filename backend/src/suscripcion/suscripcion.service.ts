@@ -49,23 +49,8 @@ export class SuscripcionService {
   }
 
   async cancelar(preapprovalId: string) {
-
     await this.mpService.cancelarSuscripcion(preapprovalId);
-
-    const suscripcion = await this.suscripcionRepository.findOne({
-      where: { preapprovalId },
-      relations: ['usuario'],
-    });
-
-    if (!suscripcion) {
-      throw new NotFoundException('Suscripción no encontrada');
-    }
-
-    suscripcion.estado = 'CANCELADA';
-    suscripcion.usuario.estado_pago = false;
-
-    await this.usuarioRepo.save(suscripcion.usuario);
-    return await this.suscripcionRepository.save(suscripcion);
+    await this.suscripcionRepository.update({ preapprovalId }, { estado: 'CANCELADA' });
   }
 
 
@@ -115,7 +100,7 @@ export class SuscripcionService {
 
 
     const suscripcionActual = await this.suscripcionRepository.findOne({
-      where: { usuario: { id_usuario }, estado: 'ACTIVA' },
+      where: { usuario: { id_usuario }, estado: 'Activa' },
       relations: ['plan', 'usuario'],
     });
     if (!suscripcionActual) throw new NotFoundException('No se encontró suscripción activa');
