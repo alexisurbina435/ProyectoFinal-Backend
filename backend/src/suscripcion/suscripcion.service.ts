@@ -49,9 +49,25 @@ export class SuscripcionService {
   }
 
   async cancelar(preapprovalId: string) {
+
     await this.mpService.cancelarSuscripcion(preapprovalId);
-    await this.suscripcionRepository.update({ preapprovalId }, { estado: 'CANCELADA' });
+
+    const suscripcion = await this.suscripcionRepository.findOne({
+      where: { preapprovalId },
+      relations: ['usuario'],
+    });
+
+    if (!suscripcion) {
+      throw new NotFoundException('Suscripción no encontrada');
+    }
+
+    suscripcion.estado = 'CANCELADA';
+    suscripcion.usuario.estado_pago = false;
+
+    await this.usuarioRepo.save(suscripcion.usuario);
+    return await this.suscripcionRepository.save(suscripcion);
   }
+
 
   async actualizarEstado(preapprovalId: string, estado: string) {
     const suscripcion = await this.suscripcionRepository.findOne({
@@ -104,19 +120,15 @@ export class SuscripcionService {
     });
     if (!suscripcionActual) throw new NotFoundException('No se encontró suscripción activa');
 
-    //Cancela suscripcion en mercado pago
     await this.mpService.cancelarSuscripcion(suscripcionActual.preapprovalId);
     suscripcionActual.estado = 'CANCELADA';
     await this.suscripcionRepository.save(suscripcionActual);
 
-    //Buscar nuevo plan
     const planNuevo = await this.planRepo.findOne({ where: { id_plan: id_plan_nuevo } });
     if (!planNuevo) throw new NotFoundException('Plan nuevo no encontrado');
 
-    //Crear nueva suscripción en MP
     const mp = await this.mpService.crearSuscripcion(usuario.email, planNuevo.precio, planNuevo.nombre);
 
-    //Crear registro en DB
     const fechaInicio = new Date();
     const fechaFin = new Date();
     fechaFin.setMonth(fechaFin.getMonth() + mesesContratados);
