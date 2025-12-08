@@ -2,6 +2,9 @@ import { Controller, Get, Post, Body, HttpCode, HttpStatus, Res } from '@nestjs/
 import { AuthService } from './auth.service';
 import { Usuario } from '../usuario/entities/usuario.entity';
 import { response, type Response } from 'express';
+import { UseGuards, Req, } from '@nestjs/common';
+import { AuthGuard } from './auth.guard';
+import path from 'path';
 @Controller('auth')
 export class AuthController {
   // UsuarioService: any;
@@ -13,8 +16,8 @@ export class AuthController {
     const { usuario, access_token } = await this.authService.login(createUsuarioDto.email, createUsuarioDto.password);
     response.cookie('token', access_token, {
       httpOnly: true,
-      secure: true, // solo por HTTPS
-      sameSite: 'none',
+      secure: true, // solo por HTTPS // en desarrollo poner en false
+      sameSite: 'none', // 'lax' o 'none' si es cross-site para trabajar en local host
       maxAge: 5 * 60 * 60 * 1000, // 5 horas
       path:'/' 
     });
@@ -26,14 +29,26 @@ export class AuthController {
   async logout(@Res({ passthrough: true }) response: Response) {
     response.clearCookie('token',{
       httpOnly: true,
-      secure: true, // solo por HTTPS
-      sameSite: 'none',
+      secure: true, // solo por HTTPS // en desarrollo poner en false
+      sameSite: 'none', // 'lax' o 'none' si es cross-site para trabajar en local host
       maxAge: 5 * 60 * 60 * 1000, // 5 horas
       path:'/' 
     });
     return { message: 'Logout exitoso' };
   }
+
+  @UseGuards(AuthGuard)
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  async Me(@Req() req: any) {
+   // Si el guard usa req.usuario:
+    if (!req.usuario) {
+        return {}; // Devolver un objeto vacío o null, pero preferimos 200 con un cuerpo.
+    }
+     return req.usuario; // Debe devolver un objeto con datos para obtener 200
 }
+}
+
 
 
 

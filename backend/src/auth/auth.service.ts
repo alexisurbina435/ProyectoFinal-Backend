@@ -58,4 +58,10 @@ export class AuthService {
       };
   
     }
+    async Me(id: number) {
+  return this.usuarioRepository.findOne({
+    where: { id_usuario: id },
+    relations: ['ficha', 'suscripciones', 'suscripciones.plan'],
+  });
+}
 }

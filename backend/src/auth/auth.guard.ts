@@ -4,24 +4,30 @@ import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private readonly jwtService: JwtService) { }
+  constructor(private jwtService: JwtService) {}
 
-    canActivate(context: ExecutionContext): boolean {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
 
-        const request = context.switchToHttp().getRequest();
-        const token = request.cookies?.token;
+    //  Buscar token en cookies
+    let token = request.cookies?.token;
 
-        if (!token) {
-            return false;
-        }
-        try {
-            const usuario = this.jwtService.verify(token);
-            request['usuario'] = usuario;
-           
-            return true;
-        } catch (error) {
-            
-            return false;
-        }
+    //  Si no está, buscar token en header
+    if (!token) {
+      const authHeader = request.headers['authorization'];
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+      }
     }
+
+    if (!token) return false;
+
+    try {
+      const usuario = this.jwtService.verify(token);
+      request.usuario = usuario;
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }
