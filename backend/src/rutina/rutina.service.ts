@@ -290,7 +290,17 @@ export class RutinaService {
       }
 
       // 4. Si es una rutina de tipo CLIENTE, asignarla como rutina activa del usuario
+      // IMPORTANTE: Desvincular primero la rutina anterior (si existe) antes de asignar la nueva
       if (createRutinaCompletaDto.tipo_rutina === TipoRutina.CLIENTE && usuario) {
+        // Primero desvincular cualquier rutina activa anterior
+        await queryRunner.manager
+          .createQueryBuilder()
+          .update(Usuario)
+          .set({ rutina_activa: null as any })
+          .where('id_usuario = :id_usuario', { id_usuario: usuario.id_usuario })
+          .execute();
+        
+        // Luego asignar la nueva rutina activa
         await queryRunner.manager.update(Usuario, 
           { id_usuario: usuario.id_usuario },
           { rutina_activa: rutinaGuardada }
