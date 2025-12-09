@@ -181,8 +181,27 @@ export class RutinaService {
   }
 
   async deleteRutina(id_rutina: number): Promise<boolean> {
-    const result = await this.rutinaRepository.delete({ id_rutina });
-    return (result.affected ?? 0) > 0;
+    // Verificar que la rutina existe
+    const rutina = await this.rutinaRepository.findOne({ where: { id_rutina } });
+    if (!rutina) {
+      return false;
+    }
+
+    // Desvincular la rutina de todos los usuarios que la tengan como activa
+    // Esto evita errores de foreign key constraint
+    await this.dataSource
+      .createQueryBuilder()
+      .update(Usuario)
+      .set({ rutina_activa: null as any })
+      .where('rutina_activa_id = :id_rutina', { id_rutina })
+      .execute();
+
+    // Eliminar la rutina (las semanas, días y dificultades se eliminan en CASCADE)
+    // Si la rutina existía antes y no hay excepciones, la eliminación fue exitosa
+    await this.rutinaRepository.delete({ id_rutina });
+    
+    // Si llegamos aquí sin excepciones y la rutina existía, la eliminación fue exitosa
+    return true;
   }
 
   /**
@@ -271,7 +290,17 @@ export class RutinaService {
       }
 
       // 4. Si es una rutina de tipo CLIENTE, asignarla como rutina activa del usuario
+      // IMPORTANTE: Desvincular primero la rutina anterior (si existe) antes de asignar la nueva
       if (createRutinaCompletaDto.tipo_rutina === TipoRutina.CLIENTE && usuario) {
+        // Primero desvincular cualquier rutina activa anterior
+        await queryRunner.manager
+          .createQueryBuilder()
+          .update(Usuario)
+          .set({ rutina_activa: null as any })
+          .where('id_usuario = :id_usuario', { id_usuario: usuario.id_usuario })
+          .execute();
+        
+        // Luego asignar la nueva rutina activa
         await queryRunner.manager.update(Usuario, 
           { id_usuario: usuario.id_usuario },
           { rutina_activa: rutinaGuardada }
