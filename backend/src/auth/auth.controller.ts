@@ -16,8 +16,9 @@ export class AuthController {
     const { usuario, access_token } = await this.authService.login(createUsuarioDto.email, createUsuarioDto.password);
     response.cookie('token', access_token, {
       httpOnly: true,
-      secure: true, // solo por HTTPS // en desarrollo poner en false
-      sameSite: 'none', // 'lax' o 'none' si es cross-site para trabajar en local host
+      secure: true, // solo por HTTPS
+      // sameSite: 'none',//para el deploy
+      sameSite: 'lax',// para el localhost
       maxAge: 5 * 60 * 60 * 1000, // 5 horas
       path:'/' 
     });
@@ -29,8 +30,9 @@ export class AuthController {
   async logout(@Res({ passthrough: true }) response: Response) {
     response.clearCookie('token',{
       httpOnly: true,
-      secure: true, // solo por HTTPS // en desarrollo poner en false
-      sameSite: 'none', // 'lax' o 'none' si es cross-site para trabajar en local host
+      secure: true, // solo por HTTPS
+      // sameSite: 'none',//para el deploy
+      sameSite: 'lax',// para el localhost
       maxAge: 5 * 60 * 60 * 1000, // 5 horas
       path:'/' 
     });
