@@ -65,13 +65,8 @@ export class Usuario {
   @OneToOne(() => FichaSalud, (ficha) => ficha.usuario)
   ficha?: FichaSalud;
 
-  // RELACIÓN → Un usuario puede tener muchas rutinas
-  @OneToMany(() => Rutina, (rutina) => rutina.usuario, {
-    cascade: true,
-  })
-  rutinas: Rutina[];
-
   // RELACIÓN → Un usuario tiene una rutina activa (nullable)
+  // Esta es la única relación necesaria. Una rutina puede ser compartida por múltiples usuarios
   @ManyToOne(() => Rutina, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'rutina_activa_id' })
   rutina_activa?: Rutina;
@@ -81,8 +76,8 @@ export class Usuario {
   ventas: Venta[];
 
   // Un usuario puede tener muchos blogs
-  // @OneToMany(() => Blog, (blog) => blog.usuario)
-  // blogs: Blog[];
+  @OneToMany(() => Blog, 'usuario')
+  blogs: Blog[];
 
   @OneToMany(() => Suscripcion, (suscripcion) => suscripcion.usuario)
   suscripciones: Suscripcion[];
