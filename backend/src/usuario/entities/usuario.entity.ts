@@ -72,7 +72,7 @@ export class Usuario {
   rutinas: Rutina[];
 
   // RELACIÓN → Un usuario tiene una rutina activa (nullable)
-  @ManyToOne(() => Rutina, { nullable: true })
+  @ManyToOne(() => Rutina, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'rutina_activa_id' })
   rutina_activa?: Rutina;
 
@@ -81,8 +81,8 @@ export class Usuario {
   ventas: Venta[];
 
   // Un usuario puede tener muchos blogs
-  @OneToMany(() => Blog, (blog) => blog.usuario)
-  blogs: Blog[];
+  // @OneToMany(() => Blog, (blog) => blog.usuario)
+  // blogs: Blog[];
 
   @OneToMany(() => Suscripcion, (suscripcion) => suscripcion.usuario)
   suscripciones: Suscripcion[];
